@@ -87,6 +87,12 @@ button {
   min-height: calc(100vh - 100px);
 }
 
+.auth-section {
+  padding: 1rem;
+  margin: 0 auto;
+  height: 20px;
+  border: #0369a1 1px solid;
+}
 .auth-card,
 .task-panel,
 .task-list-panel {
@@ -105,7 +111,7 @@ button {
 .auth-tabs,
 .tabs-panel {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
   margin-bottom: 1.5rem;
 }
@@ -246,7 +252,7 @@ textarea {
 
 .status-summary {
   display: grid;
-  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
   gap: 1rem;
 }
 
@@ -375,6 +381,11 @@ textarea {
   color: #0369a1;
 }
 
+.tag.status-deleted {
+  background: #f8d7da;
+  color: #991b1b;
+}
+
 .tag.status-completed {
   background: #e2e8f0;
   color: #475569;
@@ -407,6 +418,12 @@ textarea {
 
 .action-button.success {
   color: var(--success);
+}
+
+.task-card.deleted {
+  opacity: 0.78;
+  background: #fff1f2;
+  border-color: rgba(220, 38, 38, 0.18);
 }
 
 .task-card.completed {
