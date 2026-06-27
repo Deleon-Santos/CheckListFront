@@ -33,6 +33,7 @@ body {
 
 body {
   padding: 1rem;
+  
 }
 
 button,
@@ -51,7 +52,7 @@ button {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  
 }
 
 .app-header {
@@ -80,19 +81,7 @@ button {
   flex: 1;
 }
 
-.auth-section,
-.dashboard-section {
-  display: grid;
-  place-items: center;
-  min-height: calc(100vh - 100px);
-}
 
-.auth-section {
-  padding: 1rem;
-  margin: 0 auto;
-  height: 20px;
-  border: #0369a1 1px solid;
-}
 .auth-card,
 .task-panel,
 .task-list-panel {
@@ -278,6 +267,8 @@ textarea {
 .dashboard-grid {
   display: grid;
   gap: 1.5rem;
+  max-width: 1240px;
+  margin: 0 auto;
 }
 
 .task-panel,
@@ -452,8 +443,7 @@ textarea {
     grid-template-columns: 360px minmax(0, 1fr);
   }
 
-  .auth-section,
-  .dashboard-section {
+  .auth-section{
     min-height: calc(100vh - 120px);
   }
 }
