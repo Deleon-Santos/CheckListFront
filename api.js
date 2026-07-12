@@ -32,10 +32,35 @@ function obterCabecalhosAutenticacao() {
 
 async function requisicaoJson(url, options = {}) {
   try {
+    try {
+      console.groupCollapsed(`[Request] ${options.method || 'GET'} ${url}`);
+      const safeHeaders = Object.assign({}, options.headers || {});
+      if (safeHeaders.Authorization) safeHeaders.Authorization = 'REDACTED';
+      console.log('Headers:', safeHeaders);
+      if (options.body) {
+        try {
+          console.log('Payload:', JSON.parse(options.body));
+        } catch (e) {
+          console.log('Payload:', options.body);
+        }
+      }
+      console.groupEnd();
+    } catch (e) {
+      /* logging best-effort */
+    }
+
     const response = await fetch(url, options);
     const contentType = response.headers.get('content-type') || '';
     const isJson = contentType.includes('application/json');
     const body = isJson ? await response.json() : null;
+
+    try {
+      console.groupCollapsed(`[Response] ${response.status} ${url}`);
+      console.log(body);
+      console.groupEnd();
+    } catch (e) {
+      /* ignore logging errors */
+    }
 
     if (!response.ok) {
       const mensagem = body?.detail || body?.message || 'Erro ao comunicar com o servidor';

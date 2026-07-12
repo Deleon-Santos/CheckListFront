@@ -28,6 +28,18 @@ function createAuthController({
     },
   };
 
+  function extractTokenFromResponse(data) {
+    if (!data) return '';
+    return (
+      data.access_token ||
+      data.token ||
+      data.accessToken ||
+      data.auth_token ||
+      data.jwt ||
+      ''
+    );
+  }
+
   function showSection(section) {
     const hasSession = Boolean(obterTokenArmazenado());
     const shouldShowDashboard = section === 'dashboard' && hasSession;
@@ -40,6 +52,12 @@ function createAuthController({
     dashboardSection.classList.toggle('hidden', !shouldShowDashboard);
     dashboardSection.style.display = shouldShowDashboard ? '' : 'none';
     logoutButton.hidden = !shouldShowDashboard;
+  }
+
+  function resetRegisterForm() {
+    fields.cadastro.nome.value = '';
+    fields.cadastro.email.value = '';
+    fields.cadastro.senha.value = '';
   }
 
   function setAuthTab(tab) {
@@ -68,11 +86,16 @@ function createAuthController({
     try {
       const data = await loginApi(payload);
       const userData = data.user || { email: payload.email };
-      definirTokenArmazenado(data.access_token);
+      const token = extractTokenFromResponse(data);
+      if (token) {
+        definirTokenArmazenado(token);
+      } else {
+        console.warn('Token não retornado no login:', data);
+      }
       localStorage.setItem('checklistfront_user', JSON.stringify(userData));
       console.log('Usuário logado:', userData.nome || userData.name || userData.email);
       toast.show('Login realizado com sucesso.');
-      await onEnterDashboard();
+      if (token) await onEnterDashboard();
     } catch (error) {
       loginMessage.textContent = error.message;
     }
@@ -88,25 +111,52 @@ function createAuthController({
       senha: fields.cadastro.senha.value,
     };
 
-    if (!payload.nome || !payload.email || !payload.senha) {
-      registerMessage.textContent = 'Preencha todos os campos obrigatórios.';
-      return;
-    }
-
     try {
+      console.groupCollapsed('[Envio de cadastro]');
+      console.log(payload);
+      console.groupEnd();
+
       const data = await cadastrarApi(payload);
+      console.groupCollapsed('[Resposta do cadastro]');
+      console.log(data);
+      console.groupEnd();
+
       const userData = data.user || {
         email: payload.email,
         nome: payload.nome,
         senha: payload.senha,
       };
-      definirTokenArmazenado(data.access_token);
+
+      const token = extractTokenFromResponse(data);
       localStorage.setItem('checklistfront_user', JSON.stringify(userData));
-      console.log('Usuário cadastrado:', userData.nome || userData.name || userData.email);
-      toast.show('Conta criada com sucesso.');
-      await onEnterDashboard();
+      resetRegisterForm();
+
+      if (token) {
+        definirTokenArmazenado(token);
+        console.log('Usuário cadastrado e token armazenado:', userData.nome || userData.email);
+        registerMessage.textContent = 'Novo usuário cadastrado com sucesso!';
+        toast.show('Novo usuário cadastrado. Entrando no sistema...');
+        setTimeout(async () => {
+          try {
+            await onEnterDashboard();
+          } catch (error) {
+            console.error('Erro ao entrar no sistema após cadastro:', error);
+          }
+        }, 700);
+      } else {
+        console.log('Usuário cadastrado (sem token):', userData.nome || userData.email);
+        registerMessage.textContent = 'Novo usuário cadastrado com sucesso!';
+        toast.show('Novo usuário cadastrado. Faça login para continuar.');
+        setAuthTab('login');
+      }
     } catch (error) {
-      registerMessage.textContent = error.message;
+      console.error('Erro no cadastro:', error);
+      registerMessage.textContent = error.message || String(error);
+      try {
+        toast.show(error.message || 'Erro ao criar conta', 'error');
+      } catch (e) {
+        /* ignore */
+      }
     }
   }
 
