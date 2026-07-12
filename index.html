@@ -13,7 +13,10 @@
         <strong>CheckList</strong>
         <span>Gestor de tarefas & lembretes</span>
       </div>
-      <button id="logoutButton" class="ghost-button" hidden>Logout</button>
+      <div class="header-actions">
+        <span id="userNameDisplay" class="user-name" hidden></span>
+        <button id="logoutButton" class="ghost-button" hidden>Sair</button>
+      </div>
     </header>
 
     <main class="page-content">
@@ -73,15 +76,19 @@
           </div>
           <div class="status-summary">
             <div>
-              <span class="summary-title">Ativas</span>
+              <span class="summary-title">Abertas</span>
               <strong id="summaryActive">0</strong>
+            </div>
+            <div>
+              <span class="summary-title">Atendidas</span>
+              <strong id="summaryAttended">0</strong>
             </div>
             <div>
               <span class="summary-title">Concluídas</span>
               <strong id="summaryCompleted">0</strong>
             </div>
             <div>
-              <span class="summary-title">Excluidas</span>
+              <span class="summary-title">Excluídas</span>
               <strong id="summaryDeleted">0</strong>
             </div>
           </div>
@@ -127,7 +134,8 @@
 
           <div class="task-list-panel">
             <div class="panel-header tabs-panel">
-              <button id="tabActive" class="tab active" type="button">Tarefas Ativas</button>
+              <button id="tabOpen" class="tab active" type="button">Abertas</button>
+              <button id="tabAttended" class="tab" type="button">Atendidas</button>
               <button id="tabCompleted" class="tab" type="button">Concluídas</button>
               <button id="tabDeleted" class="tab" type="button">Excluídas</button>
             </div>

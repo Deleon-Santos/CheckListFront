@@ -69,6 +69,7 @@ async function listarTarefasApi() {
     method: 'GET',
     headers: obterCabecalhosAutenticacao(),
   });
+  
 }
 
 async function criarTarefaApi(payload) {

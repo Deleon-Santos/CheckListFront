@@ -1,4 +1,4 @@
-import { definirTokenArmazenado, loginApi, cadastrarApi } from '../api.js';
+import { definirTokenArmazenado, loginApi, cadastrarApi, obterTokenArmazenado } from '../api.js';
 import { createToastController } from './utils.js';
 
 function createAuthController({
@@ -29,11 +29,16 @@ function createAuthController({
   };
 
   function showSection(section) {
-    const hasSession = Boolean(localStorage.getItem('checklistfront_token'));
+    const hasSession = Boolean(obterTokenArmazenado());
     const shouldShowDashboard = section === 'dashboard' && hasSession;
+
+    if (!hasSession && section !== 'auth') {
+      definirTokenArmazenado('');
+    }
 
     authSection.classList.toggle('hidden', shouldShowDashboard);
     dashboardSection.classList.toggle('hidden', !shouldShowDashboard);
+    dashboardSection.style.display = shouldShowDashboard ? '' : 'none';
     logoutButton.hidden = !shouldShowDashboard;
   }
 
@@ -62,8 +67,10 @@ function createAuthController({
 
     try {
       const data = await loginApi(payload);
+      const userData = data.user || { email: payload.email };
       definirTokenArmazenado(data.access_token);
-      localStorage.setItem('checklistfront_user', JSON.stringify(data.user || { email: payload.email }));
+      localStorage.setItem('checklistfront_user', JSON.stringify(userData));
+      console.log('Usuário logado:', userData.nome || userData.name || userData.email);
       toast.show('Login realizado com sucesso.');
       await onEnterDashboard();
     } catch (error) {
@@ -88,12 +95,14 @@ function createAuthController({
 
     try {
       const data = await cadastrarApi(payload);
-      definirTokenArmazenado(data.access_token);
-      localStorage.setItem('checklistfront_user', JSON.stringify(data.user || {
+      const userData = data.user || {
         email: payload.email,
         nome: payload.nome,
         senha: payload.senha,
-      }));
+      };
+      definirTokenArmazenado(data.access_token);
+      localStorage.setItem('checklistfront_user', JSON.stringify(userData));
+      console.log('Usuário cadastrado:', userData.nome || userData.name || userData.email);
       toast.show('Conta criada com sucesso.');
       await onEnterDashboard();
     } catch (error) {

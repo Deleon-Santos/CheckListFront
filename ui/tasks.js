@@ -6,10 +6,12 @@ function createTaskController({
   taskMessage,
   taskList,
   resetTaskButton,
-  tabActive,
+  tabOpen,
+  tabAttended,
   tabCompleted,
   tabDeleted,
   summaryActive,
+  summaryAttended,
   summaryCompleted,
   summaryDeleted,
   toastElement,
@@ -49,12 +51,18 @@ function createTaskController({
     });
   }
 
+  function logTaskPayload(label, payload) {
+    console.groupCollapsed(`[${label}]`);
+    console.log(payload);
+    console.groupEnd();
+  }
+
   function getTaskMetadataText(task) {
     const dataHoraValue = task.data_hora || task.data_hora_criacao || task.created_at || task.createdAt || task.data_criacao || task.dataCadastro || task.created_date || task.created_on || task.created || null;
     const linhaId = task.id != null ? `ID: ${task.id}` : '';
     const linhaData = dataHoraValue ? `Data/Hora: ${formatTaskDateTime(dataHoraValue)}` : '';
 
-    if (linhaId && linhaData) return `${linhaId} • ${linhaData}`;
+    if (linhaId && linhaData) return `ID: ${linhaId} • ${linhaData}`;
     if (linhaId) return linhaId;
     if (linhaData) return linhaData;
     return '';
@@ -69,9 +77,70 @@ function createTaskController({
     return tasks;
   }
 
+  function getTaskStatusValue(task) {
+    const candidates = [
+      task?.status,
+      task?.estado,
+      task?.state,
+      task?.status_name,
+      task?.status_label,
+      task?.statusValue,
+      task?.status_id,
+      task?.statusId,
+      task?.codigo_status,
+      task?.codigoStatus,
+    ];
+
+    for (const candidate of candidates) {
+      const normalized = normalizeStatus(candidate);
+      if (normalized) return normalized;
+    }
+
+    return 'ativo';
+  }
+
+  function normalizeStatus(status) {
+    if (status === null || status === undefined || status === '') return '';
+
+    const value = String(status).trim().toLowerCase();
+    const variants = [
+      value,
+      value.normalize('NFD').replace(/[^\w\s]/g, '').replace(/\s+/g, ' '),
+      value.replace(/_/g, ' '),
+      value.replace(/-/g, ' '),
+    ];
+
+    const activeValues = ['ativo', 'aberta', 'aberto', 'abertas', 'pendente', 'pendentes', 'em andamento', 'em andamento', 'aguardando', 'a fazer', 'todo', 'to do', 'backlog', 'new', 'open', 'pending', 'in progress', 'in progress', 'em aberto'];
+    const attendedValues = ['atendido', 'atendida', 'atendidas', 'em atendimento', 'em analise', 'em análise', 'processing', 'review', 'in review', 'awaiting'];
+    const completedValues = ['concluido', 'concluida', 'concluído', 'concluída', 'finalizado', 'finalizada', 'done', 'finished', 'complete', 'completed', 'pronto', 'pronta', 'resolved', 'closed'];
+    const deletedValues = ['excluido', 'excluída', 'excluído', 'deletado', 'deletada', 'deleted', 'trash', 'lixeira', 'removido', 'removida'];
+
+    for (const variant of variants) {
+      if (activeValues.includes(variant)) return 'ativo';
+      if (attendedValues.includes(variant)) return 'atendido';
+      if (completedValues.includes(variant)) return 'concluído';
+      if (deletedValues.includes(variant)) return 'excluído';
+    }
+
+    if (['0', '1', '2', '3'].includes(value)) {
+      const statusByCode = { '0': 'ativo', '1': 'atendido', '2': 'concluído', '3': 'excluído' };
+      return statusByCode[value];
+    }
+
+    return '';
+  }
+
+  function getStatusLabel(status) {
+    if (status === 'excluído') return 'Excluída';
+    if (status === 'concluído') return 'Concluída';
+    if (status === 'atendido') return 'Atendida';
+    return 'Aberta';
+  }
+
   function setViewMode(mode) {
     viewMode = mode;
-    tabActive.classList.toggle('active', mode === 'active');
+    tabOpen.classList.toggle('active', mode === 'active');
+    tabAttended.classList.toggle('active', mode === 'attended');
     tabCompleted.classList.toggle('active', mode === 'completed');
     tabDeleted.classList.toggle('active', mode === 'deleted');
     render();
@@ -80,30 +149,31 @@ function createTaskController({
   function render() {
     taskList.innerHTML = '';
     const filteredTasks = tasks.filter((task) => {
-      const status = String(task.status || '').toLowerCase();
-      const isCompleted = status === 'concluído' || status === 'concluido';
-      const isDeleted = status === 'excluído' || status === 'excluido';
+      const status = getTaskStatusValue(task);
       return viewMode === 'active'
         ? status === 'ativo'
+        : viewMode === 'attended'
+        ? status === 'atendido'
         : viewMode === 'completed'
-        ? isCompleted
-        : isDeleted;
+        ? status === 'concluído'
+        : status === 'excluído';
     });
 
-    summaryActive.textContent = tasks.filter((task) => String(task.status || '').toLowerCase() === 'ativo').length;
-    summaryCompleted.textContent = tasks.filter((task) => {
-      const status = String(task.status || '').toLowerCase();
-      return status === 'concluído' || status === 'concluido';
-    }).length;
-    summaryDeleted.textContent = tasks.filter((task) => {
-      const status = String(task.status || '').toLowerCase();
-      return status === 'excluído' || status === 'excluido';
-    }).length;
+    summaryActive.textContent = tasks.filter((task) => getTaskStatusValue(task) === 'ativo').length;
+    summaryAttended.textContent = tasks.filter((task) => getTaskStatusValue(task) === 'atendido').length;
+    summaryCompleted.textContent = tasks.filter((task) => getTaskStatusValue(task) === 'concluído').length;
+    summaryDeleted.textContent = tasks.filter((task) => getTaskStatusValue(task) === 'excluído').length;
 
     if (!filteredTasks.length) {
       const emptyState = document.createElement('div');
       emptyState.className = 'task-card';
-      const message = viewMode === 'active' ? 'ativa' : viewMode === 'completed' ? 'concluída' : 'excluída';
+      const message = viewMode === 'active'
+        ? 'ativa'
+        : viewMode === 'attended'
+        ? 'atendida'
+        : viewMode === 'completed'
+        ? 'concluída'
+        : 'excluída';
       emptyState.innerHTML = `<p class="task-description">Nenhuma tarefa ${message} no momento.</p>`;
       taskList.appendChild(emptyState);
       return;
@@ -113,13 +183,14 @@ function createTaskController({
   }
 
   function createTaskCard(task) {
-    const status = String(task.status || '').toLowerCase();
-    const isCompleted = status === 'concluído' || status === 'concluido';
-    const isDeleted = status === 'excluído' || status === 'excluido';
-    const isActive = status === 'ativo';
+    const normalizedStatus = getTaskStatusValue(task);
+    const isCompleted = normalizedStatus === 'concluído';
+    const isDeleted = normalizedStatus === 'excluído';
+    const isAttended = normalizedStatus === 'atendido';
+    const isActive = normalizedStatus === 'ativo';
 
     const card = document.createElement('article');
-    card.className = `task-card ${isDeleted ? 'deleted' : isCompleted ? 'completed' : 'active'}`;
+    card.className = `task-card ${isDeleted ? 'deleted' : isCompleted ? 'completed' : isAttended ? 'attended' : 'active'}`;
 
     const title = document.createElement('h3');
     title.className = `task-title ${isCompleted ? 'completed' : ''}`;
@@ -140,26 +211,47 @@ function createTaskController({
     labels.className = 'task-labels';
 
     const statusTag = document.createElement('span');
-    statusTag.className = `tag ${isDeleted ? 'status-deleted' : isCompleted ? 'status-completed' : 'status-active'}`;
-    statusTag.textContent = task.status || (isDeleted ? 'Excluído' : isCompleted ? 'Concluído' : 'Ativo');
+    statusTag.className = `tag ${
+      normalizedStatus === 'excluído'
+        ? 'status-deleted'
+        : normalizedStatus === 'concluído'
+        ? 'status-completed'
+        : normalizedStatus === 'atendido'
+        ? 'status-attended'
+        : 'status-active'
+    }`;
+    statusTag.textContent = getStatusLabel(normalizedStatus);
     labels.appendChild(statusTag);
 
     const actions = document.createElement('div');
     actions.className = 'task-actions';
 
     const toggleButton = document.createElement('button');
-    toggleButton.className = `action-button ${isActive ? 'success' : ''}`;
+    toggleButton.className = `action-button ${normalizedStatus === 'ativo' ? 'success' : ''} ${isCompleted ? 'complete' : ''}`;
     toggleButton.type = 'button';
-    toggleButton.textContent = isDeleted ? 'Restaurar tarefa' : isActive ? 'Marcar como concluída' : 'Reativar tarefa';
+    if (normalizedStatus === 'ativo') {
+      toggleButton.innerHTML = '<span class="action-icon" aria-hidden="true">✓</span>';
+      toggleButton.setAttribute('aria-label', 'Marcar como atendida');
+    } else if (normalizedStatus === 'atendido') {
+      toggleButton.innerHTML = '<span class="action-icon" aria-hidden="true">✓</span>';
+      toggleButton.setAttribute('aria-label', 'Marcar como concluída');
+    } else if (normalizedStatus === 'concluído') {
+      toggleButton.innerHTML = '<span class="action-icon" aria-hidden="true">↺</span>';
+      toggleButton.setAttribute('aria-label', 'Reabrir tarefa');
+    } else {
+      toggleButton.innerHTML = '<span class="action-icon" aria-hidden="true">♻</span>';
+      toggleButton.setAttribute('aria-label', 'Restaurar tarefa');
+    }
     toggleButton.addEventListener('click', () => toggleTask(task));
     actions.appendChild(toggleButton);
 
     const editButton = document.createElement('button');
     editButton.className = 'action-button';
     editButton.type = 'button';
-    editButton.textContent = 'Editar';
-    editButton.disabled = isDeleted;
-    if (!isDeleted) {
+    editButton.innerHTML = '<span aria-hidden="true">✏️</span>';
+    editButton.setAttribute('aria-label', 'Editar tarefa');
+    editButton.disabled = normalizedStatus === 'excluído';
+    if (normalizedStatus !== 'excluído') {
       editButton.addEventListener('click', () => fillForm(task));
     }
     actions.appendChild(editButton);
@@ -167,7 +259,8 @@ function createTaskController({
     const deleteButton = document.createElement('button');
     deleteButton.className = 'action-button danger';
     deleteButton.type = 'button';
-    deleteButton.textContent = isDeleted ? 'Excluir permanentemente' : 'Mover para lixeira';
+    deleteButton.innerHTML = '<span aria-hidden="true">🗑️</span>';
+    deleteButton.setAttribute('aria-label', normalizedStatus === 'excluído' ? 'Excluir permanentemente' : 'Mover para lixeira');
     deleteButton.addEventListener('click', () => removeTask(task));
     actions.appendChild(deleteButton);
 
@@ -203,9 +296,11 @@ function createTaskController({
       descricao: fields.description.value.trim(),
       due_date: fields.dueDate.value || null,
       prioridade: fields.priority.value || 'Média',
-      status: editingTask?.status || 'ativo',
+      status: normalizeStatus(editingTask?.status) || 'ativo',
       user: getCurrentUser().email || getCurrentUser().nome || null,
     };
+
+    logTaskPayload('Envio de tarefa', payload);
 
     if (!payload.titulo) {
       taskMessage.textContent = 'O título da tarefa é obrigatório.';
@@ -213,13 +308,17 @@ function createTaskController({
     }
 
     try {
+      let response;
       if (editingTask) {
-        await atualizarTarefaApi(editingTask.id, payload);
+        response = await atualizarTarefaApi(editingTask.id, payload);
       } else {
-        await criarTarefaApi(payload);
+        response = await criarTarefaApi(payload);
       }
 
+      logTaskPayload('Resposta do backend', response);
+
       const refreshedTasks = await listarTarefasApi();
+      logTaskPayload('Lista de tarefas atualizada', refreshedTasks);
       setTasks(refreshedTasks);
       resetForm();
       toast.show(editingTask ? 'Tarefa atualizada com sucesso.' : 'Tarefa criada com sucesso.');
@@ -230,18 +329,33 @@ function createTaskController({
   }
 
   async function toggleTask(task) {
-    const currentStatus = String(task.status || '').toLowerCase();
-    const nextStatus = currentStatus === 'ativo' ? 'concluído' : 'ativo';
+    const currentStatus = normalizeStatus(task.status);
+    let nextStatus = 'ativo';
+    let toastMessage = 'Tarefa atualizada com sucesso.';
+
+    if (currentStatus === 'ativo') {
+      nextStatus = 'atendido';
+      toastMessage = 'Tarefa marcada como atendida.';
+    } else if (currentStatus === 'atendido') {
+      nextStatus = 'concluído';
+      toastMessage = 'Tarefa marcada como concluída.';
+    } else if (currentStatus === 'concluído' || currentStatus === 'excluído') {
+      nextStatus = 'ativo';
+      toastMessage = currentStatus === 'concluído' ? 'Tarefa reaberta.' : 'Tarefa restaurada.';
+    }
 
     try {
-      const updatedTask = await atualizarTarefaApi(task.id, {
+      const payload = {
         titulo: task.titulo || task.title,
         descricao: task.descricao || task.description || '',
         status: nextStatus,
-      });
+      };
+
+      logTaskPayload('Atualização de status', payload);
+      const updatedTask = await atualizarTarefaApi(task.id, payload);
+      logTaskPayload('Resposta de atualização', updatedTask);
       tasks = tasks.map((item) => (item.id === updatedTask.id ? updatedTask : item));
-      const messageStatus = nextStatus.toLowerCase().includes('concl') ? 'concluída' : 'reativada';
-      toast.show(`Tarefa ${messageStatus} com sucesso.`);
+      toast.show(toastMessage);
       render();
     } catch (error) {
       onAuthError(error);
@@ -283,7 +397,8 @@ function createTaskController({
   function bindEvents() {
     taskForm.addEventListener('submit', submitForm);
     resetTaskButton.addEventListener('click', resetForm);
-    tabActive.addEventListener('click', () => setViewMode('active'));
+    tabOpen.addEventListener('click', () => setViewMode('active'));
+    tabAttended.addEventListener('click', () => setViewMode('attended'));
     tabCompleted.addEventListener('click', () => setViewMode('completed'));
     tabDeleted.addEventListener('click', () => setViewMode('deleted'));
   }

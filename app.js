@@ -5,6 +5,7 @@ import { createTaskController } from './ui/tasks.js';
 const secaoAutenticacao = document.getElementById('authSection');
 const secaoDashboard = document.getElementById('dashboardSection');
 const botaoLogout = document.getElementById('logoutButton');
+const nomeUsuarioDisplay = document.getElementById('userNameDisplay');
 const botaoMostrarLogin = document.getElementById('showLogin');
 const botaoMostrarCadastro = document.getElementById('showRegister');
 const formularioLogin = document.getElementById('loginForm');
@@ -30,10 +31,12 @@ const taskController = createTaskController({
   taskMessage: document.getElementById('taskMessage'),
   taskList: document.getElementById('taskList'),
   resetTaskButton: document.getElementById('resetTask'),
-  tabActive: document.getElementById('tabActive'),
+  tabOpen: document.getElementById('tabOpen'),
+  tabAttended: document.getElementById('tabAttended'),
   tabCompleted: document.getElementById('tabCompleted'),
   tabDeleted: document.getElementById('tabDeleted'),
   summaryActive: document.getElementById('summaryActive'),
+  summaryAttended: document.getElementById('summaryAttended'),
   summaryCompleted: document.getElementById('summaryCompleted'),
   summaryDeleted: document.getElementById('summaryDeleted'),
   toastElement: alertaToast,
@@ -44,8 +47,58 @@ const taskController = createTaskController({
 
 let tarefas = [];
 
+function obterUsuarioAtual() {
+  try {
+   
+    return JSON.parse(localStorage.getItem('checklistfront_user') || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function obterNomeExibicao(usuario) {
+  const candidatos = [
+    usuario?.nome,
+    usuario?.name,
+    usuario?.username,
+    usuario?.full_name,
+    usuario?.first_name,
+    usuario?.primeiro_nome,
+  ];
+
+  for (const candidato of candidatos) {
+    if (typeof candidato === 'string' && candidato.trim()) {
+      const valor = candidato.trim();
+      return valor.includes('@') ? valor.split('@')[0] : valor;
+    }
+  }
+
+  const email = usuario?.email || usuario?.mail || '';
+  if (typeof email === 'string' && email.trim()) {
+    const valor = email.trim();
+    return valor.includes('@') ? valor.split('@')[0] : valor;
+  }
+
+  return '';
+}
+
+function atualizarCabecalhoUsuario() {
+  const usuario = obterUsuarioAtual();
+  const nome = obterNomeExibicao(usuario);
+  const temSessao = Boolean(obterTokenArmazenado());
+
+  if (nome && temSessao) {
+    nomeUsuarioDisplay.textContent = `Olá, ${nome}`;
+    nomeUsuarioDisplay.hidden = false;
+  } else {
+    nomeUsuarioDisplay.textContent = '';
+    nomeUsuarioDisplay.hidden = true;
+  }
+}
+
 function mostrarSecao(secao) {
   authController.showSection(secao);
+  atualizarCabecalhoUsuario();
 }
 
 function definirAbaAutenticacao(aba) {
@@ -62,6 +115,7 @@ function exibirToast(mensagem, tipo = 'info') {
 
 async function entrarDashboard() {
   mostrarSecao('dashboard');
+  atualizarCabecalhoUsuario();
   await carregarTarefas();
 }
 
@@ -92,6 +146,7 @@ function sair() {
   taskController.resetForm();
   taskController.setTasks(tarefas);
   mostrarSecao('auth');
+  atualizarCabecalhoUsuario();
   definirAbaAutenticacao('login');
   exibirToast('Logout realizado com sucesso.');
 }
@@ -100,6 +155,7 @@ function inicializar() {
   authController.bindEvents();
   taskController.bindEvents();
   definirAbaAutenticacao('login');
+  atualizarCabecalhoUsuario();
   mostrarSecao(obterTokenArmazenado() ? 'dashboard' : 'auth');
 
   if (obterTokenArmazenado()) {
