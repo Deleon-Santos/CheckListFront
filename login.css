@@ -92,11 +92,17 @@ button {
   box-shadow: var(--shadow);
   padding: 1.5rem;
 }
-
-.auth-card {
-  max-width: 420px;
+.dashboard-grid {
+  height: 70dvh;
+  
 }
-
+#taskList{
+    overflow-y: auto;
+    border: 1px solid red;
+    min-height: 0;
+    max-height: 90%;
+    border-radius: 15px;
+  }
 .auth-tabs,
 .tabs-panel {
   display: grid;
