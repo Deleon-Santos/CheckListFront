@@ -73,6 +73,18 @@ function createTaskController({
     render();
   }
 
+  async function refreshTasks() {
+    try {
+      const refreshedTasks = await listarTarefasApi();
+      logTaskPayload('Lista de tarefas atualizada', refreshedTasks);
+      setTasks(refreshedTasks);
+      return refreshedTasks;
+    } catch (error) {
+      onAuthError(error);
+      throw error;
+    }
+  }
+
   function getTasks() {
     return tasks;
   }
@@ -317,9 +329,7 @@ function createTaskController({
 
       logTaskPayload('Resposta do backend', response);
 
-      const refreshedTasks = await listarTarefasApi();
-      logTaskPayload('Lista de tarefas atualizada', refreshedTasks);
-      setTasks(refreshedTasks);
+      await refreshTasks();
       resetForm();
       toast.show(editingTask ? 'Tarefa atualizada com sucesso.' : 'Tarefa criada com sucesso.');
     } catch (error) {
@@ -329,7 +339,7 @@ function createTaskController({
   }
 
   async function toggleTask(task) {
-    const currentStatus = normalizeStatus(task.status);
+    const currentStatus = getTaskStatusValue(task);
     let nextStatus = 'ativo';
     let toastMessage = 'Tarefa atualizada com sucesso.';
 
@@ -354,17 +364,16 @@ function createTaskController({
       logTaskPayload('Atualização de status', payload);
       const updatedTask = await atualizarTarefaApi(task.id, payload);
       logTaskPayload('Resposta de atualização', updatedTask);
-      tasks = tasks.map((item) => (item.id === updatedTask.id ? updatedTask : item));
+      await refreshTasks();
       toast.show(toastMessage);
-      render();
     } catch (error) {
       onAuthError(error);
     }
   }
 
   async function removeTask(task) {
-    const status = String(task.status || '').toLowerCase();
-    const isDeleted = status === 'excluído' || status === 'excluido';
+    const status = getTaskStatusValue(task);
+    const isDeleted = status === 'excluído';
     const taskTitle = task.titulo || task.title || '';
     const confirmed = confirm(
       isDeleted
@@ -377,7 +386,6 @@ function createTaskController({
     try {
       if (isDeleted) {
         await excluirTarefaApi(task.id);
-        tasks = tasks.filter((item) => item.id !== task.id);
         toast.show('Tarefa excluída permanentemente.');
       } else {
         const updatedTask = await atualizarTarefaApi(task.id, {
@@ -385,10 +393,10 @@ function createTaskController({
           descricao: task.descricao || task.description || '',
           status: 'excluído',
         });
-        tasks = tasks.map((item) => (item.id === updatedTask.id ? updatedTask : item));
+        logTaskPayload('Resposta de remoção', updatedTask);
         toast.show('Tarefa movida para a lixeira.');
       }
-      render();
+      await refreshTasks();
     } catch (error) {
       onAuthError(error);
     }
