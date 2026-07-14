@@ -106,8 +106,7 @@ button {
 }
 
 .dashboard-grid {
-  height: 70dvh;
-  
+  height: calc(90dvh - 200px);
 }
 #taskList{
     overflow-y: auto;
@@ -499,7 +498,7 @@ textarea {
   .auth-card,
   .task-panel,
   .task-list-panel {
-    padding: 1.2rem;
+    padding: 1rem;
   }
 
   .task-actions {
