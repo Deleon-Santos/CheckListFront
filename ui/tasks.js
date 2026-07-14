@@ -62,7 +62,7 @@ function createTaskController({
     const linhaId = task.id != null ? `ID: ${task.id}` : '';
     const linhaData = dataHoraValue ? `Data/Hora: ${formatTaskDateTime(dataHoraValue)}` : '';
 
-    if (linhaId && linhaData) return `ID: ${linhaId} • ${linhaData}`;
+    if (linhaId && linhaData) return ` ${linhaId} • ${linhaData}`;
     if (linhaId) return linhaId;
     if (linhaData) return linhaData;
     return '';
