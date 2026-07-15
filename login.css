@@ -48,7 +48,7 @@ button {
 }
 
 .app-shell {
-  max-width: 1240px;
+  max-width: 1440px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -107,6 +107,7 @@ button {
 
 .dashboard-grid {
   height: calc(90dvh - 200px);
+  
 }
 #taskList{
     overflow-y: auto;
@@ -198,6 +199,114 @@ textarea {
   resize: vertical;
 }
 
+.task-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.task-card h3 {
+  margin: 0 0 0.75rem;
+}
+
+.task-description {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+}
+
+.task-created-date {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.task-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #f8fafc;
+  color: var(--text);
+}
+
+.tag.status-active {
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--primary-strong);
+}
+
+.tag.status-attended {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--success);
+}
+
+.tag.status-completed {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--success);
+}
+
+.tag.status-deleted {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--danger);
+}
+
+.tag.area-ti {
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--primary-strong);
+}
+
+.tag.area-comercial {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--warning);
+}
+
+.tag.area-operacao {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--success);
+}
+
+.task-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.action-button {
+  border: 1px solid transparent;
+  background: #f8fafc;
+  padding: 0.6rem 0.85rem;
+  border-radius: 14px;
+  color: var(--text);
+  transition: all 180ms ease;
+}
+
+.action-button:hover {
+  background: #eef2ff;
+}
+
+.action-button.danger {
+  background: rgba(220, 38, 38, 0.12);
+  color: var(--danger);
+}
+
+.action-button.success {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--success);
+}
+
 .primary-button,
 .secondary-button,
 .ghost-button {
@@ -285,14 +394,16 @@ textarea {
 .dashboard-grid {
   display: grid;
   gap: 1.5rem;
-  max-width: 1240px;
+  max-width: 1440px;
   margin: 0 auto;
 }
 
 .task-panel,
 .task-list-panel {
   padding: 1.5rem;
+  
 }
+
 
 .task-list-panel {
   min-height: 460px;
