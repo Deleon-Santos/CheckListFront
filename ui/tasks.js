@@ -22,6 +22,7 @@ function createTaskController({
   const toast = createToastController(toastElement);
   let tasks = [];
   let viewMode = 'active';
+  let areaFilter = '';
   let editingTask = null;
 
   const fields = {
@@ -29,6 +30,7 @@ function createTaskController({
     description: document.getElementById('taskDescription'),
     dueDate: document.getElementById('taskDueDate'),
     priority: document.getElementById('taskPriority'),
+    area: document.getElementById('taskArea'),
   };
 
   function formatTaskDate(value) {
@@ -142,6 +144,48 @@ function createTaskController({
     return '';
   }
 
+  function getTaskAreaValue(task) {
+    const candidates = [
+      task?.area,
+      task?.setor,
+      task?.departamento,
+      task?.area_nome,
+      task?.areaName,
+      task?.areaLabel,
+    ];
+
+    for (const candidate of candidates) {
+      const normalized = normalizeArea(candidate);
+      if (normalized) return normalized;
+    }
+
+    return 'TI';
+  }
+
+  function normalizeArea(area) {
+    if (area === null || area === undefined || area === '') return '';
+
+    const value = String(area).trim().toLowerCase();
+    const variants = [
+      value,
+      value.normalize('NFD').replace(/[^\w\s]/g, '').replace(/\s+/g, ' '),
+      value.replace(/_/g, ' '),
+      value.replace(/-/g, ' '),
+    ];
+
+    const tiValues = ['ti', 'tecnologia', 'tecnologia da informacao', 'tecnologia da informacao', 'tecnologia da informação', 'tec', 'info'];
+    const comercialValues = ['comercial', 'vendas', 'sales'];
+    const operacaoValues = ['operacao', 'operação', 'operacoes', 'operacao', 'operacional'];
+
+    for (const variant of variants) {
+      if (tiValues.includes(variant)) return 'TI';
+      if (comercialValues.includes(variant)) return 'Comercial';
+      if (operacaoValues.includes(variant)) return 'Operação';
+    }
+
+    return '';
+  }
+
   function getStatusLabel(status) {
     if (status === 'excluído') return 'Excluída';
     if (status === 'concluído') return 'Concluída';
@@ -158,17 +202,26 @@ function createTaskController({
     render();
   }
 
+  function setAreaFilter(value) {
+    areaFilter = value;
+    render();
+  }
+
   function render() {
     taskList.innerHTML = '';
     const filteredTasks = tasks.filter((task) => {
       const status = getTaskStatusValue(task);
-      return viewMode === 'active'
+      const isStatusMatch = viewMode === 'active'
         ? status === 'ativo'
         : viewMode === 'attended'
         ? status === 'atendido'
         : viewMode === 'completed'
         ? status === 'concluído'
         : status === 'excluído';
+
+      const taskArea = getTaskAreaValue(task);
+      const isAreaMatch = !areaFilter || areaFilter === taskArea;
+      return isStatusMatch && isAreaMatch;
     });
 
     summaryActive.textContent = tasks.filter((task) => getTaskStatusValue(task) === 'ativo').length;
@@ -233,7 +286,12 @@ function createTaskController({
         : 'status-active'
     }`;
     statusTag.textContent = getStatusLabel(normalizedStatus);
-    labels.appendChild(statusTag);
+
+    const areaName = getTaskAreaValue(task);
+    const areaTag = document.createElement('span');
+    areaTag.className = `tag area-${areaName.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[^\w-]/g, '')}`;
+    areaTag.textContent = areaName;
+    labels.append(areaTag, statusTag);
 
     const actions = document.createElement('div');
     actions.className = 'task-actions';
@@ -284,6 +342,7 @@ function createTaskController({
     taskForm.reset();
     editingTask = null;
     taskMessage.textContent = '';
+    fields.area.value = 'TI';
     taskForm.querySelector('button[type="submit"]').textContent = 'Salvar tarefa';
   }
 
@@ -293,6 +352,7 @@ function createTaskController({
     fields.description.value = task.descricao || task.description || '';
     fields.dueDate.value = task.due_date || task.vencimento || '';
     fields.priority.value = task.prioridade || task.priority || 'Média';
+    fields.area.value = getTaskAreaValue(task) || 'TI';
 
     taskForm.querySelector('button[type="submit"]').textContent = 'Atualizar tarefa';
     taskMessage.textContent = '';
@@ -308,6 +368,7 @@ function createTaskController({
       descricao: fields.description.value.trim(),
       due_date: fields.dueDate.value || null,
       prioridade: fields.priority.value || 'Média',
+      area: fields.area.value || 'TI',
       status: normalizeStatus(editingTask?.status) || 'ativo',
       user: getCurrentUser().email || getCurrentUser().nome || null,
     };
@@ -358,6 +419,7 @@ function createTaskController({
       const payload = {
         titulo: task.titulo || task.title,
         descricao: task.descricao || task.description || '',
+        area: getTaskAreaValue(task),
         status: nextStatus,
       };
 
@@ -391,6 +453,7 @@ function createTaskController({
         const updatedTask = await atualizarTarefaApi(task.id, {
           titulo: task.titulo || task.title,
           descricao: task.descricao || task.description || '',
+          area: getTaskAreaValue(task),
           status: 'excluído',
         });
         logTaskPayload('Resposta de remoção', updatedTask);
@@ -409,6 +472,9 @@ function createTaskController({
     tabAttended.addEventListener('click', () => setViewMode('attended'));
     tabCompleted.addEventListener('click', () => setViewMode('completed'));
     tabDeleted.addEventListener('click', () => setViewMode('deleted'));
+    if (taskAreaFilter) {
+      taskAreaFilter.addEventListener('change', (event) => setAreaFilter(event.target.value));
+    }
   }
 
   return {

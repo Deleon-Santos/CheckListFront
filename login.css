@@ -113,15 +113,15 @@ button {
     overflow-y: auto;
     
     min-height: 0;
-    max-height: 90%;
+    max-height: 77%;
     border-radius: 15px;
   }
 .auth-tabs,
 .tabs-panel {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .tab {
@@ -204,7 +204,7 @@ textarea {
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 1rem;
-  margin-bottom: 1rem;
+  
   box-shadow: var(--shadow);
 }
 
@@ -410,15 +410,32 @@ textarea {
 }
 
 .panel-header {
+  
+  gap: 1rem;
+  
+}
+
+.area-filter {
+  width: 300px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: .1rem;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: right;
   margin-bottom: 1rem;
+}
+
+.area-filter label {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.area-filter select {
+  min-width: 160px;
 }
 
 .panel-header h2 {
   margin: 0;
+  margin-bottom: 0.5rem;
 }
 
 .task-list {
@@ -440,8 +457,7 @@ textarea {
 }
 
 .task-card:hover {
-  
-  border-bottom: 4px solid var(--primary);
+  border-left: 4px solid var(--primary);
 }
 
 .task-meta {
@@ -523,16 +539,18 @@ textarea {
   justify-content: flex-end;
 }
 
-.action-button {
-  border: 1px solid var(--border);
+.tabs-panel button {
+  border:1px solid var(--border);
   background: #fff;
   color: var(--muted);
-  padding: 0.7rem 0.85rem;
+  padding: 0.7rem 0.75rem;
   border-radius: 14px;
   transition: all 150ms ease;
 }
 
-.action-button:hover {
+
+
+.tabs-panel button:hover {
   border-color: var(--border);
   color: var(--text);
   transform: translateY(-1.2px);

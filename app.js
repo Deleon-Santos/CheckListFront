@@ -35,6 +35,7 @@ const taskController = createTaskController({
   tabAttended: document.getElementById('tabAttended'),
   tabCompleted: document.getElementById('tabCompleted'),
   tabDeleted: document.getElementById('tabDeleted'),
+  taskAreaFilter: document.getElementById('taskAreaFilter'),
   summaryActive: document.getElementById('summaryActive'),
   summaryAttended: document.getElementById('summaryAttended'),
   summaryCompleted: document.getElementById('summaryCompleted'),
