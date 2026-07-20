@@ -41,6 +41,9 @@ function createAuthController({
   }
 
   function showSection(section) {
+    console.log('showSection ->', section);
+
+  
     const hasSession = Boolean(obterTokenArmazenado());
     const shouldShowDashboard = section === 'dashboard' && hasSession;
 
@@ -50,7 +53,7 @@ function createAuthController({
 
     authSection.classList.toggle('hidden', shouldShowDashboard);
     dashboardSection.classList.toggle('hidden', !shouldShowDashboard);
-    dashboardSection.style.display = shouldShowDashboard ? '' : 'none';
+    //dashboardSection.style.display = shouldShowDashboard ? '' : 'none';
     logoutButton.hidden = !shouldShowDashboard;
   }
 

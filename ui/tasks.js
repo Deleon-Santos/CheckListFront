@@ -28,7 +28,6 @@ function createTaskController({
   const fields = {
     title: document.getElementById('taskTitle'),
     description: document.getElementById('taskDescription'),
-    dueDate: document.getElementById('taskDueDate'),
     priority: document.getElementById('taskPriority'),
     area: document.getElementById('taskArea'),
   };
@@ -342,7 +341,9 @@ function createTaskController({
     taskForm.reset();
     editingTask = null;
     taskMessage.textContent = '';
-    fields.area.value = 'TI';
+    if (fields.area) {
+      fields.area.value = 'TI';
+    }
     taskForm.querySelector('button[type="submit"]').textContent = 'Salvar tarefa';
   }
 
@@ -350,9 +351,10 @@ function createTaskController({
     editingTask = task;
     fields.title.value = task.titulo || task.title || '';
     fields.description.value = task.descricao || task.description || '';
-    fields.dueDate.value = task.due_date || task.vencimento || '';
     fields.priority.value = task.prioridade || task.priority || 'Média';
-    fields.area.value = getTaskAreaValue(task) || 'TI';
+    if (fields.area) {
+      fields.area.value = getTaskAreaValue(task) || 'TI';
+    }
 
     taskForm.querySelector('button[type="submit"]').textContent = 'Atualizar tarefa';
     taskMessage.textContent = '';
@@ -366,9 +368,8 @@ function createTaskController({
     const payload = {
       titulo: fields.title.value.trim(),
       descricao: fields.description.value.trim(),
-      due_date: fields.dueDate.value || null,
       prioridade: fields.priority.value || 'Média',
-      area: fields.area.value || 'TI',
+      area: fields.area ? fields.area.value || 'TI' : 'TI',
       status: normalizeStatus(editingTask?.status) || 'ativo',
       user: getCurrentUser().email || getCurrentUser().nome || null,
     };

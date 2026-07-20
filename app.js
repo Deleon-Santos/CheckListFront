@@ -12,6 +12,7 @@ const formularioLogin = document.getElementById('loginForm');
 const formularioCadastro = document.getElementById('registerForm');
 const alertaToast = document.getElementById('toast');
 
+
 const authController = createAuthController({
   authSection: secaoAutenticacao,
   dashboardSection: secaoDashboard,
@@ -149,6 +150,7 @@ function sair() {
   mostrarSecao('auth');
   atualizarCabecalhoUsuario();
   definirAbaAutenticacao('login');
+  
   exibirToast('Logout realizado com sucesso.');
 }
 
