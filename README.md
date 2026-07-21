@@ -1,6 +1,6 @@
 # 📋 CheckList - Sistema de Gerenciamento de ocorrência
 
- Sistema web para gerenciamento  e ocorrências, desenvolvido utilizando JavaScript moderno (ES Modules), HTML5 e CSS3, com autenticação baseada em Token JWT e comunicação com API REST.
+ Sistema web para gerenciamento e ocorrências, desenvolvido utilizando JavaScript moderno (ES Modules), HTML5 e CSS3, com autenticação baseada em Token JWT e comunicação com API REST.
 
 ---
 
