@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CheckListFront - Gerenciador de Tarefas</title>
+  <title>CheckList - Gerenciador de Ocorrência</title>
   <link rel="stylesheet" href="login.css" />
 </head>
 <body>
@@ -117,6 +117,7 @@
                   <option value="Comercial">Comercial</option>
                   <option value="Operação">Operação</option>
                 </select>
+                
               </div>
               <div class="form-row">
                 <div class="form-group half-width">
@@ -137,7 +138,9 @@
           </div>
 
           <div class="task-list-panel">
-            <div class="area-filter">
+            <div class="filter"> 
+              <div class="area-filter">
+               
                 <label for="taskAreaFilter">Área</label>
                 <select id="taskAreaFilter">
                   <option value="">Todas</option>
@@ -146,6 +149,17 @@
                   <option value="Operação">Operação</option>
                 </select>
               </div>
+
+              <div class="area-filter">
+                <label for="taskPrioridadeFilter">Prioridade</label>
+                <select id="taskPrioridadeFilter">
+                  <option value="">Todas</option>
+                  <option value="Baixa">Baixa</option>
+                  <option value="Média">Média</option>
+                  <option value="Alta">Alta</option>
+                </select>
+              </div>
+            </div>
 
             <div class="panel-header">
               <div class="tabs-panel">

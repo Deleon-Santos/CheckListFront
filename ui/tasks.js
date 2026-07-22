@@ -292,6 +292,12 @@ function createTaskController({
     areaTag.textContent = areaName;
     labels.append(areaTag, statusTag);
 
+    const priority = task.prioridade || task.priority || 'Média';
+    const priorityTag = document.createElement('span');
+    priorityTag.className = `tag priority-${priority.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[^\w-]/g, '')}`;
+    priorityTag.textContent = `${priority}`;
+    labels.appendChild(priorityTag);
+
     const actions = document.createElement('div');
     actions.className = 'task-actions';
 

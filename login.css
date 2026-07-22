@@ -436,7 +436,12 @@ textarea {
   gap: 1rem;
   
 }
-
+.filter{
+  margin:0 auto;
+  display: flex;
+  gap: 1rem;
+  
+}
 .area-filter {
   width: 300px;
   display: flex;
@@ -585,7 +590,7 @@ textarea {
   align-items: center;
   justify-content: center;
   font-size: 1.6rem;
-  font-weight: bolder;
+  font-weight: 800;
 }
 
 .task-card.attended {
