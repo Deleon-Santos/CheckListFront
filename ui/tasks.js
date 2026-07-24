@@ -24,6 +24,7 @@ function createTaskController({
   let viewMode = 'active';
   let areaFilter = '';
   let editingTask = null;
+  let priorityFilter = '';
 
   const fields = {
     title: document.getElementById('taskTitle'),
@@ -184,6 +185,8 @@ function createTaskController({
 
     return '';
   }
+
+
 
   function getStatusLabel(status) {
     if (status === 'excluído') return 'Excluída';
@@ -454,7 +457,7 @@ function createTaskController({
 
     try {
       if (isDeleted) {
-        await excluirTarefaApi(task.id);
+        await excluirTarefaApi(task.id);name
         toast.show('Tarefa excluída permanentemente.');
       } else {
         const updatedTask = await atualizarTarefaApi(task.id, {

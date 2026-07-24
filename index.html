@@ -4,7 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CheckList - Gerenciador de Ocorrência</title>
-  <link rel="stylesheet" href="login.css" />
+  <link rel="stylesheet" href="css/root.css" />
+  <link rel="stylesheet" href="css/body.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/querry.css">
+
 </head>
 <body>
   <div class="app-shell">
@@ -99,7 +103,7 @@
         <div class="dashboard-grid">
           <div class="task-panel">
             <div class="panel-header">
-              <h2>Nova tarefa</h2>
+              <h2>Nova Ocorrência</h2>
             </div>
             <form id="taskForm" class="task-form" autocomplete="off">
               <div class="form-group">
@@ -131,7 +135,7 @@
               </div>
               <div class="form-footer spaced">
                 <button class="secondary-button" type="button" id="resetTask">Limpar</button>
-                <button class="primary-button" type="submit">Salvar tarefa</button>
+                <button class="primary-button" type="submit">Salvar</button>
               </div>
               <div class="form-message" id="taskMessage"></div>
             </form>
@@ -168,8 +172,6 @@
                 <button id="tabCompleted" class="tab" type="button">Concluídas</button>
                 <button id="tabDeleted" class="tab" type="button">Excluídas</button>
               </div>
-              
-
 
             </div>
 

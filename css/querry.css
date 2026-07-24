@@ -1,0 +1,27 @@
+
+
+@media (min-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 360px minmax(0, 1fr);
+  }
+
+  .auth-section{
+    min-height: calc(100vh - 120px);
+  }
+}
+
+@media (max-width: 720px) {
+  body {
+    padding: 0.75rem;
+  }
+
+  .auth-card,
+  .task-panel,
+  .task-list-panel {
+    padding: 1rem;
+  }
+
+  .task-actions {
+    justify-content: stretch;
+  }
+}
