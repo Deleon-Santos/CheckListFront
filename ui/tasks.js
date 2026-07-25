@@ -94,15 +94,7 @@ function createTaskController({
   function getTaskStatusValue(task) {
     const candidates = [
       task?.status,
-      task?.estado,
-      task?.state,
-      task?.status_name,
-      task?.status_label,
-      task?.statusValue,
-      task?.status_id,
-      task?.statusId,
-      task?.codigo_status,
-      task?.codigoStatus,
+      task?.statusValue,     
     ];
 
     for (const candidate of candidates) {
@@ -147,11 +139,6 @@ function createTaskController({
   function getTaskAreaValue(task) {
     const candidates = [
       task?.area,
-      task?.setor,
-      task?.departamento,
-      task?.area_nome,
-      task?.areaName,
-      task?.areaLabel,
     ];
 
     for (const candidate of candidates) {
@@ -370,44 +357,81 @@ function createTaskController({
     fields.title.focus();
   }
 
+
+
+
+  let isSubmitting = false;
+
   async function submitForm(event) {
-    event.preventDefault();
-    taskMessage.textContent = '';
+  event.preventDefault();
 
-    const payload = {
-      titulo: fields.title.value.trim(),
-      descricao: fields.description.value.trim(),
-      prioridade: fields.priority.value || 'Média',
-      area: fields.area ? fields.area.value || 'TI' : 'TI',
-      status: normalizeStatus(editingTask?.status) || 'ativo',
-      user: getCurrentUser().email || getCurrentUser().nome || null,
-    };
+  // Impede múltiplos envios
+  if (isSubmitting) return;
 
-    logTaskPayload('Envio de tarefa', payload);
+  isSubmitting = true;
 
-    if (!payload.titulo) {
-      taskMessage.textContent = 'O título da tarefa é obrigatório.';
-      return;
-    }
+  const submitButton = taskForm.querySelector('button[type="submit"]');
+  const textoOriginal = submitButton.textContent;
 
-    try {
-      let response;
-      if (editingTask) {
-        response = await atualizarTarefaApi(editingTask.id, payload);
-      } else {
-        response = await criarTarefaApi(payload);
-      }
+  submitButton.disabled = true;
+  submitButton.textContent = "Salvando...";
 
-      logTaskPayload('Resposta do backend', response);
+  taskMessage.textContent = "Processando! Aguarde...";
 
-      await refreshTasks();
-      resetForm();
-      toast.show(editingTask ? 'Tarefa atualizada com sucesso.' : 'Tarefa criada com sucesso.');
-    } catch (error) {
-      onAuthError(error);
-      taskMessage.textContent = error.message;
-    }
+  const payload = {
+    titulo: fields.title.value.trim(),
+    descricao: fields.description.value.trim(),
+    prioridade: fields.priority.value || "Média",
+    area: fields.area ? fields.area.value || "TI" : "TI",
+    status: normalizeStatus(editingTask?.status) || "ativo",
+    user: getCurrentUser().email || getCurrentUser().nome || null,
+  };
+
+  logTaskPayload("Envio de tarefa", payload);
+
+  if (!payload.titulo) {
+    taskMessage.textContent = "O título da tarefa é obrigatório.";
+
+    submitButton.disabled = false;
+    submitButton.textContent = textoOriginal;
+    isSubmitting = false;
+    return;
   }
+
+  try {
+    let response;
+
+    if (editingTask) {
+      response = await atualizarTarefaApi(editingTask.id, payload);
+    } else {
+      response = await criarTarefaApi(payload);
+    }
+
+    logTaskPayload("Resposta do backend", response);
+
+    await refreshTasks();
+    resetForm();
+
+    toast.show(
+      editingTask
+        ? "Tarefa atualizada com sucesso."
+        : "Tarefa criada com sucesso."
+    );
+
+  } catch (error) {
+    onAuthError(error);
+    taskMessage.textContent = error.message;
+
+  } finally {
+    // Sempre executa, com sucesso ou erro
+    isSubmitting = false;
+    submitButton.disabled = false;
+    submitButton.textContent = editingTask
+      ? "Atualizar tarefa"
+      : "Salvar tarefa";
+  }
+}
+
 
   async function toggleTask(task) {
     const currentStatus = getTaskStatusValue(task);

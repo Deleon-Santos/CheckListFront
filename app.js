@@ -63,9 +63,6 @@ function obterNomeExibicao(usuario) {
     usuario?.nome,
     usuario?.name,
     usuario?.username,
-    usuario?.full_name,
-    usuario?.first_name,
-    usuario?.primeiro_nome,
   ];
 
   for (const candidato of candidatos) {
