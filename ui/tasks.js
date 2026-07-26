@@ -15,6 +15,8 @@ function createTaskController({
   summaryCompleted,
   summaryDeleted,
   toastElement,
+  taskPriorityFilter, // <-- Adicionado o elemento select do filtro de prioridade
+  taskAreaFilter,
   getCurrentUser,
   onAuthError,
   onLogout,
@@ -23,8 +25,8 @@ function createTaskController({
   let tasks = [];
   let viewMode = 'active';
   let areaFilter = '';
+  let priorityFilter = ''; // Estado para armazenar o filtro de prioridade
   let editingTask = null;
-  let priorityFilter = '';
 
   const fields = {
     title: document.getElementById('taskTitle'),
@@ -105,6 +107,20 @@ function createTaskController({
     return 'ativo';
   }
 
+  function getTaskPriorityValue(task) {
+    const candidatespriority = [
+      task?.prioridade,
+      task?.priority,
+    ];
+
+    for (const candidatess of candidatespriority) {
+      const normalized = normalizePriority(candidatess);
+      if (normalized) return normalized;
+    }
+
+    return 'Média';
+  }
+
   function normalizeStatus(status) {
     if (status === null || status === undefined || status === '') return '';
 
@@ -116,7 +132,7 @@ function createTaskController({
       value.replace(/-/g, ' '),
     ];
 
-    const activeValues = ['ativo', 'aberta', 'aberto', 'abertas', 'pendente', 'pendentes', 'em andamento', 'em andamento', 'aguardando', 'a fazer', 'todo', 'to do', 'backlog', 'new', 'open', 'pending', 'in progress', 'in progress', 'em aberto'];
+    const activeValues = ['ativo', 'aberta', 'aberto', 'abertas', 'pendente', 'pendentes', 'em andamento', 'aguardando', 'a fazer', 'todo', 'to do', 'backlog', 'new', 'open', 'pending', 'in progress', 'em aberto'];
     const attendedValues = ['atendido', 'atendida', 'atendidas', 'em atendimento', 'em analise', 'em análise', 'processing', 'review', 'in review', 'awaiting'];
     const completedValues = ['concluido', 'concluida', 'concluído', 'concluída', 'finalizado', 'finalizada', 'done', 'finished', 'complete', 'completed', 'pronto', 'pronta', 'resolved', 'closed'];
     const deletedValues = ['excluido', 'excluída', 'excluído', 'deletado', 'deletada', 'deleted', 'trash', 'lixeira', 'removido', 'removida'];
@@ -131,6 +147,31 @@ function createTaskController({
     if (['0', '1', '2', '3'].includes(value)) {
       const statusByCode = { '0': 'ativo', '1': 'atendido', '2': 'concluído', '3': 'excluído' };
       return statusByCode[value];
+    }
+
+    return '';
+  }
+
+  function normalizePriority(priority) {
+    if (priority === null || priority === undefined || priority === '') return '';
+
+    const value = String(priority).trim().toLowerCase();
+
+    const variants = [
+      value,
+      value.normalize('NFD').replace(/[^\w\s]/g, ''),
+      value.replace(/_/g, ' '),
+      value.replace(/-/g, ' ')
+    ];
+
+    const baixaValues = ['baixa', 'low', 'l'];
+    const mediaValues = ['media', 'média', 'medium', 'm'];
+    const altaValues = ['alta', 'high', 'h'];
+
+    for (const variant of variants) {
+      if (baixaValues.includes(variant)) return 'Baixa';
+      if (mediaValues.includes(variant)) return 'Média';
+      if (altaValues.includes(variant)) return 'Alta';
     }
 
     return '';
@@ -160,9 +201,9 @@ function createTaskController({
       value.replace(/-/g, ' '),
     ];
 
-    const tiValues = ['ti', 'tecnologia', 'tecnologia da informacao', 'tecnologia da informacao', 'tecnologia da informação', 'tec', 'info'];
+    const tiValues = ['ti', 'tecnologia', 'tecnologia da informacao', 'tecnologia da informação', 'tec', 'info'];
     const comercialValues = ['comercial', 'vendas', 'sales'];
-    const operacaoValues = ['operacao', 'operação', 'operacoes', 'operacao', 'operacional'];
+    const operacaoValues = ['operacao', 'operação', 'operacoes', 'operacional'];
 
     for (const variant of variants) {
       if (tiValues.includes(variant)) return 'TI';
@@ -172,8 +213,6 @@ function createTaskController({
 
     return '';
   }
-
-
 
   function getStatusLabel(status) {
     if (status === 'excluído') return 'Excluída';
@@ -191,6 +230,11 @@ function createTaskController({
     render();
   }
 
+  function setPriorityFilter(value) {
+    priorityFilter = value;
+    render();
+  }
+
   function setAreaFilter(value) {
     areaFilter = value;
     render();
@@ -198,6 +242,8 @@ function createTaskController({
 
   function render() {
     taskList.innerHTML = '';
+
+    // Filtragem unificada: Status + Área + Prioridade
     const filteredTasks = tasks.filter((task) => {
       const status = getTaskStatusValue(task);
       const isStatusMatch = viewMode === 'active'
@@ -210,7 +256,11 @@ function createTaskController({
 
       const taskArea = getTaskAreaValue(task);
       const isAreaMatch = !areaFilter || areaFilter === taskArea;
-      return isStatusMatch && isAreaMatch;
+
+      const taskPriority = getTaskPriorityValue(task);
+      const isPriorityMatch = !priorityFilter || priorityFilter === taskPriority;
+
+      return isStatusMatch && isAreaMatch && isPriorityMatch;
     });
 
     summaryActive.textContent = tasks.filter((task) => getTaskStatusValue(task) === 'ativo').length;
@@ -228,7 +278,7 @@ function createTaskController({
         : viewMode === 'completed'
         ? 'concluída'
         : 'excluída';
-      emptyState.innerHTML = `<p class="task-description">Nenhuma tarefa ${message} no momento.</p>`;
+      emptyState.innerHTML = `<p class="task-description">Nenhuma tarefa ${message} encontrada para esses filtros.</p>`;
       taskList.appendChild(emptyState);
       return;
     }
@@ -241,7 +291,6 @@ function createTaskController({
     const isCompleted = normalizedStatus === 'concluído';
     const isDeleted = normalizedStatus === 'excluído';
     const isAttended = normalizedStatus === 'atendido';
-    const isActive = normalizedStatus === 'ativo';
 
     const card = document.createElement('article');
     card.className = `task-card ${isDeleted ? 'deleted' : isCompleted ? 'completed' : isAttended ? 'attended' : 'active'}`;
@@ -280,13 +329,13 @@ function createTaskController({
     const areaTag = document.createElement('span');
     areaTag.className = `tag area-${areaName.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[^\w-]/g, '')}`;
     areaTag.textContent = areaName;
-    labels.append(areaTag, statusTag);
 
-    const priority = task.prioridade || task.priority || 'Média';
+    const priorityName = getTaskPriorityValue(task);
     const priorityTag = document.createElement('span');
-    priorityTag.className = `tag priority-${priority.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[^\w-]/g, '')}`;
-    priorityTag.textContent = `${priority}`;
-    labels.appendChild(priorityTag);
+    priorityTag.className = `tag priority-${priorityName.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[^\w-]/g, '')}`;
+    priorityTag.textContent = priorityName;
+
+    labels.append(areaTag, statusTag, priorityTag);
 
     const actions = document.createElement('div');
     actions.className = 'task-actions';
@@ -347,7 +396,7 @@ function createTaskController({
     editingTask = task;
     fields.title.value = task.titulo || task.title || '';
     fields.description.value = task.descricao || task.description || '';
-    fields.priority.value = task.prioridade || task.priority || 'Média';
+    fields.priority.value = getTaskPriorityValue(task);
     if (fields.area) {
       fields.area.value = getTaskAreaValue(task) || 'TI';
     }
@@ -357,81 +406,71 @@ function createTaskController({
     fields.title.focus();
   }
 
-
-
-
   let isSubmitting = false;
 
   async function submitForm(event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  // Impede múltiplos envios
-  if (isSubmitting) return;
+    if (isSubmitting) return;
 
-  isSubmitting = true;
+    isSubmitting = true;
 
-  const submitButton = taskForm.querySelector('button[type="submit"]');
-  const textoOriginal = submitButton.textContent;
+    const submitButton = taskForm.querySelector('button[type="submit"]');
+    const textoOriginal = submitButton.textContent;
 
-  submitButton.disabled = true;
-  submitButton.textContent = "Salvando...";
+    submitButton.disabled = true;
+    submitButton.textContent = "Salvando...";
+    taskMessage.textContent = "Processando! Aguarde...";
 
-  taskMessage.textContent = "Processando! Aguarde...";
+    const payload = {
+      titulo: fields.title.value.trim(),
+      descricao: fields.description.value.trim(),
+      prioridade: fields.priority.value || "Média",
+      area: fields.area ? fields.area.value || "TI" : "TI",
+      status: normalizeStatus(editingTask?.status) || "ativo",
+      user: getCurrentUser()?.email || getCurrentUser()?.nome || null,
+    };
 
-  const payload = {
-    titulo: fields.title.value.trim(),
-    descricao: fields.description.value.trim(),
-    prioridade: fields.priority.value || "Média",
-    area: fields.area ? fields.area.value || "TI" : "TI",
-    status: normalizeStatus(editingTask?.status) || "ativo",
-    user: getCurrentUser().email || getCurrentUser().nome || null,
-  };
+    logTaskPayload("Envio de tarefa", payload);
 
-  logTaskPayload("Envio de tarefa", payload);
-
-  if (!payload.titulo) {
-    taskMessage.textContent = "O título da tarefa é obrigatório.";
-
-    submitButton.disabled = false;
-    submitButton.textContent = textoOriginal;
-    isSubmitting = false;
-    return;
-  }
-
-  try {
-    let response;
-
-    if (editingTask) {
-      response = await atualizarTarefaApi(editingTask.id, payload);
-    } else {
-      response = await criarTarefaApi(payload);
+    if (!payload.titulo) {
+      taskMessage.textContent = "O título da tarefa é obrigatório.";
+      submitButton.disabled = false;
+      submitButton.textContent = textoOriginal;
+      isSubmitting = false;
+      return;
     }
 
-    logTaskPayload("Resposta do backend", response);
+    try {
+      let response;
 
-    await refreshTasks();
-    resetForm();
+      if (editingTask) {
+        response = await atualizarTarefaApi(editingTask.id, payload);
+      } else {
+        response = await criarTarefaApi(payload);
+      }
 
-    toast.show(
-      editingTask
-        ? "Tarefa atualizada com sucesso."
-        : "Tarefa criada com sucesso."
-    );
+      logTaskPayload("Resposta do backend", response);
 
-  } catch (error) {
-    onAuthError(error);
-    taskMessage.textContent = error.message;
+      await refreshTasks();
+      resetForm();
 
-  } finally {
-    // Sempre executa, com sucesso ou erro
-    isSubmitting = false;
-    submitButton.disabled = false;
-    submitButton.textContent = editingTask
-      ? "Atualizar tarefa"
-      : "Salvar tarefa";
+      toast.show(
+        editingTask
+          ? "Tarefa atualizada com sucesso."
+          : "Tarefa criada com sucesso."
+      );
+    } catch (error) {
+      onAuthError(error);
+      taskMessage.textContent = error.message;
+    } finally {
+      isSubmitting = false;
+      submitButton.disabled = false;
+      submitButton.textContent = editingTask
+        ? "Atualizar tarefa"
+        : "Salvar tarefa";
+    }
   }
-}
-
 
   async function toggleTask(task) {
     const currentStatus = getTaskStatusValue(task);
@@ -453,6 +492,7 @@ function createTaskController({
       const payload = {
         titulo: task.titulo || task.title,
         descricao: task.descricao || task.description || '',
+        prioridade: getTaskPriorityValue(task),
         area: getTaskAreaValue(task),
         status: nextStatus,
       };
@@ -481,12 +521,13 @@ function createTaskController({
 
     try {
       if (isDeleted) {
-        await excluirTarefaApi(task.id);name
+        await excluirTarefaApi(task.id);
         toast.show('Tarefa excluída permanentemente.');
       } else {
         const updatedTask = await atualizarTarefaApi(task.id, {
           titulo: task.titulo || task.title,
           descricao: task.descricao || task.description || '',
+          prioridade: getTaskPriorityValue(task),
           area: getTaskAreaValue(task),
           status: 'excluído',
         });
@@ -506,8 +547,14 @@ function createTaskController({
     tabAttended.addEventListener('click', () => setViewMode('attended'));
     tabCompleted.addEventListener('click', () => setViewMode('completed'));
     tabDeleted.addEventListener('click', () => setViewMode('deleted'));
+
     if (taskAreaFilter) {
       taskAreaFilter.addEventListener('change', (event) => setAreaFilter(event.target.value));
+    }
+
+    // Event Listener adicionado para o Filtro de Prioridade
+    if (taskPriorityFilter) {
+      taskPriorityFilter.addEventListener('change', (event) => setPriorityFilter(event.target.value));
     }
   }
 
@@ -519,6 +566,7 @@ function createTaskController({
     render,
     fillForm,
     setViewMode,
+    setPriorityFilter,
     getCurrentViewMode: () => viewMode,
   };
 }

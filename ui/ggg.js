@@ -5,16 +5,13 @@
   }
 
   function getTaskPriorityValue(task) {
-    const candidates = [
+    const candidatespriority = [
       task?.prioridade,
-      task?.priority,
-      task?.prioridade_nome,
-      task?.priorityName,
-      task?.priorityLabel,
+      
     ];
 
-    for (const candidate of candidates) {
-      const normalized = normalizePriority(candidate);
+    for (const candidatess of candidatespriority) {
+      const normalized = normalizePriority(candidatess);
       if (normalized) return normalized;
     }
 
