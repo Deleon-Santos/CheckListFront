@@ -153,6 +153,9 @@ function sair() {
   exibirToast('Logout realizado com sucesso.');
 }
 
+
+
+
 function inicializar() {
   authController.bindEvents();
   taskController.bindEvents();

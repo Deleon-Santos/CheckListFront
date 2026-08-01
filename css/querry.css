@@ -3,10 +3,20 @@
 @media (min-width: 900px) {
   .dashboard-grid {
     grid-template-columns: 360px minmax(0, 1fr);
+    height: 100%;
   }
 
   .auth-section{
     min-height: calc(100vh - 120px);
+  }
+  .auth-card,
+  .task-panel,
+  .task-list-panel {
+    padding: 1rem;
+    min-width: 360px;
+  }
+  .area-filter {
+    max-width: 260px;
   }
 }
 
@@ -20,8 +30,20 @@
   .task-list-panel {
     padding: 1rem;
   }
-
+  span.summary-title {
+    font-size: 0.7rem;
+  }
+  .status-summary {
+    
+    grid-template-columns: repeat(4, minmax(100px, 1fr));
+   
+}
+  .area-filter {
+    max-width: 200px;
+  }
+  
   .task-actions {
     justify-content: stretch;
   }
+
 }

@@ -74,6 +74,10 @@
 .task-description {
   margin: 0 0 0.75rem;
   color: var(--muted);
+  flex-wrap: wrap;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .task-created-date {
