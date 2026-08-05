@@ -5,6 +5,10 @@
   max-width: 1440px;
   margin: 0 auto;
   height: calc(90dvh - 200px);
+  grid-template-columns: 360px minmax(0, 1fr);
+  
+     
+  
 }
 
 #taskList{

@@ -1,26 +1,38 @@
 
 
-@media (min-width: 900px) {
-  .dashboard-grid {
-    grid-template-columns: 360px minmax(0, 1fr);
-    height: 100%;
+@media (max-width: 900px) {
+  .brand strong ,.brand span{
+    font-size: .9rem;
   }
-
+  
+  .dashboard-hero h1, .dashboard-hero p{
+    font-size: 1.3rem;
+    text-align: center;
+  }
+  .dashboard-hero p{
+    margin-top: 0.5rem;
+    font-size: .8rem;
+  }
   .auth-section{
     min-height: calc(100vh - 120px);
   }
+  
   .auth-card,
   .task-panel,
   .task-list-panel {
     padding: 1rem;
     min-width: 360px;
   }
+
+  .task-panel{
+    display: none;
+  }
   .area-filter {
     max-width: 260px;
   }
-}
 
-@media (max-width: 720px) {
+
+
   body {
     padding: 0.75rem;
   }
@@ -30,16 +42,28 @@
   .task-list-panel {
     padding: 1rem;
   }
+
   span.summary-title {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
   }
   .status-summary {
     
-    grid-template-columns: repeat(4, minmax(100px, 1fr));
+    grid-template-columns: repeat(4, minmax(80px, 1fr));
    
-}
+  }
+  .dashboard-grid {
+    display:flex;
+    flex-direction: column;
+    
+    height: 100%;
+     
+  }
+  
   .area-filter {
     max-width: 200px;
+  }
+  .tab{
+    font-size: 0.7rem;
   }
   
   .task-actions {
