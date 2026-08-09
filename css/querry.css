@@ -70,4 +70,14 @@
     justify-content: stretch;
   }
 
+  .menu-mobile {
+    display: flex;
+    position: fixed;
+    align-items: center;
+    justify-content: center;
+    bottom: 0;
+    right: 0;
+    z-index: 1000;
+  }
+
 }
