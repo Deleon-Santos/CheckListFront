@@ -8,10 +8,11 @@
   <link rel="stylesheet" href="css/body.css">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/querry.css">
-
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <div class="app-shell">
+  <div class="app-shell" id="home">
     <header class="app-header">
       
       <div class="brand">
@@ -103,9 +104,10 @@
         </div>
 
         <div class="dashboard-grid">
-          <div class="task-panel">
+          <div class="task-panel" >
             <div class="panel-header">
               <h2>Nova Ocorrência</h2>
+              <button id="closeTaskPanel" class="close-button" type="button"><i class="fas fa-times"></i></button>
             </div>
             <form id="taskForm" class="task-form" autocomplete="off">
               <div class="form-group">
@@ -143,7 +145,7 @@
             </form>
           </div>
 
-          <div class="task-list-panel">
+          <div class="task-list-panel" id="status-task">
             <div class="filter"> 
               <div class="area-filter">
                
@@ -184,9 +186,9 @@
              <nav id="mobileMenu" class="navigator ">
                
                 <ul>
-                  <li><a href="#home"><span clas="casa">&#8962;</span></a></li>
-                  <li><a href="#taskForm"><span class="plus">&#43;</span></a></li>
-                  <li><a href="#task-painel"><span>&#9776;</span></a></li>
+                  <li><a href="#home"><i class="fas fa-home"></i></a></li>
+                  <li><a href="#taskForm"><i class="fas fa-plus"></i></a></li>
+                  <li><a href="#status-task"><i class="fas fa-bars"></i></a></li>
                   
                 </ul>
              </nav>

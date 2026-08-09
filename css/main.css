@@ -372,11 +372,32 @@
   background: #e4faf1;
 }
 
+
+
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.close-button {
+  display: none;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 150ms ease;
+}
+
 .menu-mobile {
   display: none;
   margin: 0 auto;
   width: 100%;
 }
+
 .navigator {
   margin: 0 auto;
 

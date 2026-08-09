@@ -1,6 +1,15 @@
 
 
 @media (max-width: 900px) {
+
+
+  .task-panel.show {
+    display: block;
+  }
+
+  .close-button{
+    display: block;
+  }
   .brand strong ,.brand span{
     font-size: .9rem;
   }

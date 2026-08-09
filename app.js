@@ -154,6 +154,31 @@ function sair() {
 }
 
 
+const taskPanel = document.querySelector('.task-panel');
+const closeTaskPanel = document.getElementById('closeTaskPanel');
+const openTaskPanel = document.querySelector(
+    '.menu-mobile a[href="#taskForm"]'
+);
+
+// Abrir painel pelo botão +
+openTaskPanel.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    taskPanel.classList.add('show');
+
+    taskPanel.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+});
+
+// Fechar painel pelo X
+closeTaskPanel.addEventListener('click', () => {
+    taskPanel.classList.remove('show');
+});
+
+
+
 
 
 function inicializar() {

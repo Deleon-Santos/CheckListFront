@@ -415,6 +415,8 @@ function createTaskController({
 
     isSubmitting = true;
 
+    const taskPanel = document.querySelector('.task-panel');// Seleciona o painel de tarefas que sera fechado ao termino da ação de salvar ou atualizar a tarefa
+
     const submitButton = taskForm.querySelector('button[type="submit"]');
     const textoOriginal = submitButton.textContent;
 
@@ -454,6 +456,9 @@ function createTaskController({
 
       await refreshTasks();
       resetForm();
+
+      taskPanel.classList.remove('show');// Fechar o painel de tarefas após salvar ou atualizar
+      taskForm.scrollIntoView({ behavior: "smooth", block: "start" });
 
       toast.show(
         editingTask
