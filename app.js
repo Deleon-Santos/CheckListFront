@@ -178,7 +178,24 @@ closeTaskPanel.addEventListener('click', () => {
 });
 
 
+const navigatorMenu = document.querySelector('.navigator');
 
+function controlarNavigator() {
+    const chegouAoFinal =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 5;
+
+    if (chegouAoFinal) {
+        navigatorMenu.classList.add('hidden');
+    } else {
+        navigatorMenu.classList.remove('hidden');
+    }
+}
+
+window.addEventListener('scroll', controlarNavigator);
+window.addEventListener('resize', controlarNavigator);
+
+controlarNavigator();
 
 
 function inicializar() {
