@@ -384,6 +384,7 @@ O projeto pode evoluir com funcionalidades como:
 - 🌙 Tema Dark Mode
 - 🐳 Docker
 - ☁ Deploy em nuvem
+- versão mobile
 
 ---
 
