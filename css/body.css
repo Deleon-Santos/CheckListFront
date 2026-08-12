@@ -1,5 +1,7 @@
 
 .app-header {
+  
+  
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -132,6 +134,10 @@ textarea {
   background: transparent;
   color: var(--text);
   border: 1px solid var(--border);
+}
+.ghost-button:hover {
+  background: #f8fafc86;
+  transform: translateY(-1px);
 }
 
 .form-footer {

@@ -193,6 +193,7 @@ function controlarNavigator() {
 }
 
 window.addEventListener('scroll', controlarNavigator);
+
 window.addEventListener('resize', controlarNavigator);
 
 controlarNavigator();
