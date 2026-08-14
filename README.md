@@ -392,4 +392,4 @@ O projeto pode evoluir com funcionalidades como:
 
 O **CheckList** é uma aplicação web moderna para gerenciamento de ocorrência, construída utilizando uma arquitetura modular e desacoplada, separando interface, regras de negócio e comunicação com a API.
 
-A utilização de JavaScript modular, autenticação JWT e integração com uma API REST torna o sistema escalável, organizado e preparado para futuras evoluções, mantendo uma experiência simples e eficiente para o usuário final.
+A utilização de JavaScript modular, autenticação JWT e integração com uma API REST torna o sistema escalável, organizado e preparado para futuras evoluções, mantendo uma experiência simples e eficiente para o usuário final..
