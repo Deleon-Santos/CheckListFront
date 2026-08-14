@@ -38,7 +38,7 @@
 .page-content {
   flex: 1;
   overflow: hidden;
-  
+  padding:0 1rem;
 }
 
 .auth-card,
@@ -49,13 +49,18 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 1.5rem;
+  padding: 1rem;
 }
 
  .auth-section{
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .dashboard-section {
+    margin: 0 auto;
+    max-width: 1640px;
   }
 .auth-card {
   
