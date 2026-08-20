@@ -1,6 +1,6 @@
 # 📋 CheckList - Sistema de Gerenciamento de ocorrência
 ![imagem de capa](img/banner.png)
-# Deploy [Aqui!]("https://deleon-santos.github.io/CheckListFront/")
+# Deploy [Aqui!](https://deleon-santos.github.io/CheckListFront/)
  Sistema web para gerenciamento e ocorrências, desenvolvido utilizando JavaScript moderno (ES Modules), HTML5 e CSS3, com autenticação baseada em Token JWT e comunicação com API REST.
 
 ---
