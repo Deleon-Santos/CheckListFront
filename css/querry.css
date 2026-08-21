@@ -14,10 +14,12 @@
     display: block;
   }
 
-  .brand strong ,.brand span{
+  .brand strong {
     font-size: .9rem;
   }
-  
+  .brand span{
+    font-size: .6rem;
+  }
   .dashboard-hero h1, .dashboard-hero p{
     font-size: 1.3rem;
     text-align: center;
@@ -48,14 +50,6 @@
     padding: 0;
   }
 
-  span.summary-title {
-    font-size: 0.5rem;
-  }
-
-  .status-summary {   
-    grid-template-columns: repeat(4, minmax(70px, 1fr));
-  }
-
   .dashboard-grid {
     display:flex;
     flex-direction: column;
@@ -63,22 +57,23 @@
   }
   
   .area-filter {
-    max-width: 200px;
+    max-width: 150px;
   }
 
   .tab{
-    font-size: 0.7rem;
+    font-size: .8rem;
   }
   
   .task-actions {
-    justify-content: stretch;
+    justify-content: flex-end;
   }
 
   .menu-mobile {
+    
     display: flex;
     position: fixed;
     align-items: center;   
-    justify-content: center;
+    justify-content: space-around;
     bottom: 0;
     right: 0;
     z-index: 1000;
@@ -89,14 +84,20 @@
   }
 
   .navigator ul {   
+    
     display: flex;
     align-items: center;
-    justify-content: center;
+    
     gap: 5rem;
     list-style: none;
     padding: 0;
     padding-top: 10px ;
+  }
+  #userNameDisplay, #logoutButton{
+   
     margin-block-start: 0;
+    margin-bottom: 5px;
+    
   }
 
   .navigator li {
@@ -117,8 +118,34 @@
   }
 
   .navigator .plus {
-    font-size: 2.9rem;
+    font-size: 1.8rem;
     color: rgb(2, 205, 2);  
   }
-
+  .status-summary {   
+    grid-template-columns: repeat(4, minmax(70px, 1fr));
+  }
     }
+
+@media (max-width: 480px) {
+  
+    .dashboard-hero h1, .dashboard-hero p{
+      font-size: 1rem;
+      text-align: center;
+    }
+    .dashboard-hero p{
+      margin-top: 0.5rem;
+      font-size: .7rem;
+    }
+
+  span.summary-title {
+    font-size: 0.5rem;
+  }
+
+  .tab{
+    font-size: 0.6rem;
+  }
+  #userNameDisplay, #logoutButton{
+    font-size: 0.8rem;
+  }
+  
+}

@@ -33,6 +33,7 @@ O sistema permite:
 - Organização por área;
 - Controle do status das ocorrência;
 - Visualização de indicadores em tempo real.
+- Notificação via SMTP.
 
 Todo o acesso ao sistema é protegido por autenticação utilizando **Token JWT**.
 
@@ -52,7 +53,7 @@ Todo o acesso ao sistema é protegido por autenticação utilizando **Token JWT*
 
 ## 📋 Ocorrências
 
-O sistema permite:
+O sistema envia as notificações via email para uma a area tecnoca responsavel alé do Autor:
 
 - ✅ Criar ocorrência
 - ✏️ Editar ocorrência
@@ -171,21 +172,26 @@ Essa separação facilita manutenção, escalabilidade e reutilização do códi
 
 ## Front-end
 
-- 🌐 HTML5
-- 🎨 CSS3
-- ⚙️ JavaScript ES6+
-- 📦 ES Modules
+- HTML5
+- CSS3
+- JavaScript ES6+
+- ES Modules
+- GitHub Pages
 
 ---
 
 ## Back-end
 
-- 🐍 Python
+- Python
 - Flask
 - Flask-JWT
 - SQLAlchemy
-- SQLite
-
+- Postgres
+- Render
+- Supabase
+- Docker
+- SMTP
+- Bcrypt
 ---
 
 ## Comunicação
@@ -327,7 +333,7 @@ Caso o token expire:
 
 ---
 
-# 📋 Gerenciamento de Tarefas
+# 📋 Gerenciamento de Ocorreências
 
 Cada ocorrência possui:
 
@@ -381,11 +387,6 @@ O sistema implementa:
 O projeto pode evoluir com funcionalidades como:
 
 - 👥 Controle de permissões por perfil
-- 🔔 Notificações em tempo real
-- 🌙 Tema Dark Mode
-- 🐳 Docker
-- ☁ Deploy em nuvem
-- versão mobile
 
 ---
 
