@@ -33,7 +33,6 @@
 }
 
 .page-content {
-  
   flex: 1;
   padding:0 1rem;
 }
@@ -49,20 +48,22 @@
   padding: 1rem;
 }
 
- .auth-section{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.auth-section{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .dashboard-section {
-    margin: 0 auto;
-    max-width: 1640px;
-  }
+.dashboard-section {
+  margin: 0 auto;
+  max-width: 1640px;
+}
 
 .auth-card {  
+  
   max-width: 480px;
   margin: 0 auto;
+  margin-top: 2rem;
   padding: 2rem;
 }
 

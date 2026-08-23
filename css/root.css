@@ -20,48 +20,54 @@
   box-sizing: border-box;
 }
 
-html,
+
 body {
-  padding: 0;
   margin: 0;
-  min-height: 100%;
+  min-height: 100vh;
+
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: radial-gradient(circle at top, rgba(157, 233, 254, 0.128), transparent 88%),
-    radial-gradient(circle at bottom right, rgba(65, 89, 126, 0.699), transparent 97%),
+
+  background:
+    radial-gradient(circle at top,
+      rgba(157, 233, 254, 0.128),
+      transparent 88%
+    ),
+    radial-gradient(circle at bottom right,
+      rgba(65, 89, 126, 0.699),
+      transparent 97%
+    ),
     var(--bg);
+
   color: var(--text);
 }
 
-/* Aplica o scroll vertical com barra transparente no corpo do app */
-html,
-#taskList {
-  overflow-y: auto;
+html{
+  scroll-behavior: smooth;
+}
 
-  /* Firefox */
+#taskList {
+  scroll-behavior: smooth; 
+  overflow-y: auto;
   scrollbar-width:thin;
   scrollbar-color: rgba(0, 0, 0, 0.295) transparent;
 }
 
-/* Chrome, Safari, Edge e Opera (WebKit) */
 body::-webkit-scrollbar,
 .page-content::-webkit-scrollbar {
   width: 3px; /* Largura bem fina e discreta */
 }
 
-/* Trilho totalmente transparente */
 body::-webkit-scrollbar-track,
 .page-content::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* Indicador de rolagem discreto e semi-transparente */
 body::-webkit-scrollbar-thumb,
 .page-content::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.15); /* Ajuste a opacidade como preferir */
   border-radius: 99px;
 }
 
-/* Leve contraste ao passar o mouse por cima */
 body::-webkit-scrollbar-thumb:hover,
 .page-content::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0, 0, 0, 0.3);
@@ -83,5 +89,7 @@ button {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  padding: 0;
+  padding: 0; 
+  
+  
 }

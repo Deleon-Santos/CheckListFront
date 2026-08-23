@@ -17,17 +17,21 @@
   .brand strong {
     font-size: .9rem;
   }
+
   .brand span{
     font-size: .6rem;
   }
+
   .dashboard-hero h1, .dashboard-hero p{
     font-size: 1.3rem;
     text-align: center;
   }
+
   .dashboard-hero p{
     margin-top: 0.5rem;
     font-size: .8rem;
   }
+
   .auth-section{
     min-height: calc(100vh - 120px);
   }
@@ -42,6 +46,7 @@
   .task-panel{
     display: none;
   }
+
   .area-filter {
     max-width: 260px;
   }
@@ -68,8 +73,7 @@
     justify-content: flex-end;
   }
 
-  .menu-mobile {
-    
+  .menu-mobile {    
     display: flex;
     position: fixed;
     align-items: center;   
@@ -83,27 +87,25 @@
     margin: 0 auto;   
   }
 
-  .navigator ul {   
-    
+  .navigator ul {      
     display: flex;
     align-items: center;
     margin:5px;
     gap: 5rem;
     list-style: none;
-    padding: 0;
-    
+    padding: 0; 
   }
-  #userNameDisplay, #logoutButton{
-   
+
+  #userNameDisplay, #logoutButton{  
     margin-block-start: 0;
-    margin-bottom: 5px;
-    
+    margin-bottom: 5px;   
   }
 
   .navigator li {
     margin: 0;
     list-style: none;
   }
+
   .navigator a {
     text-decoration: none;
     color: var(--text);
@@ -121,21 +123,21 @@
     font-size: 1.8rem;
     color: rgb(2, 205, 2);  
   }
+
   .status-summary {   
     grid-template-columns: repeat(4, minmax(70px, 1fr));
   }
-    }
+}
 
 @media (max-width: 480px) {
-  
-    .dashboard-hero h1, .dashboard-hero p{
-      font-size: 1rem;
-      text-align: center;
-    }
-    .dashboard-hero p{
-      margin-top: 0.5rem;
-      font-size: .7rem;
-    }
+  .dashboard-hero h1, .dashboard-hero p{
+    font-size: 1rem;
+    text-align: center;
+  }
+  .dashboard-hero p{
+    margin-top: 0.5rem;
+    font-size: .7rem;
+  }
 
   span.summary-title {
     font-size: 0.5rem;
@@ -144,6 +146,7 @@
   .tab{
     font-size: 0.6rem;
   }
+  
   #userNameDisplay, #logoutButton{
     font-size: 0.8rem;
   }
