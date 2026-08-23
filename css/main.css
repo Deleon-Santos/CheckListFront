@@ -42,10 +42,10 @@
 }
 
 .tab {
-  
+  border:1px solid transparent;
   background: transparent;
   border-radius: 20px ;
-  padding: 0.85rem .85rem;
+  padding: .5rem .5rem;
   color: var(--muted);
   transition: all 180ms ease;
 }
@@ -54,15 +54,15 @@
   background-color: var(--surface);
   border:none ;
 }
+
 #showRegister.tab.active{
   background-color: var(--surface);
   border:none ;
 }
   
-
 .tab#tabOpen.active {
   border-radius: 20px 20px  0 0;
-  margin-bottom: 1rem; 
+  margin-bottom: .5rem; 
   background: #e1eaf7;
   color: var(--text);
 }
@@ -70,22 +70,23 @@
 .tab#tabAttended.active {
   border-radius:  20px 20px 0 0 ;
   background: #fafaf0;
-  margin-bottom: 1rem; 
+  margin-bottom: .5rem; 
   color: var(--text);
 }
+
 .tab#tabCompleted.active {
   background: #e4faf1;
   border-radius: 20px 20px 0 0 ;
   color: var(--text);
-  margin-bottom: 1rem; 
+  margin-bottom: .5rem; 
 }
+
 .tab#tabDeleted.active {
   background: #f8d7da;
   border-radius:20px 20px 20px 0  ;
   color: var(--text);
-  margin-bottom: 1rem; 
+  margin-bottom: .5rem; 
 }
-
 
 .auth-form,
 .task-form {
