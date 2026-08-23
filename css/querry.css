@@ -130,6 +130,10 @@
 }
 
 @media (max-width: 480px) {
+  .page-content, .app-header {
+    padding: 0.5rem;
+  }
+
   .dashboard-hero h1, .dashboard-hero p{
     font-size: 1rem;
     text-align: center;
