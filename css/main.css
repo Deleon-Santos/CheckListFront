@@ -59,33 +59,29 @@
   background-color: var(--surface);
   border:none ;
 }
-  
-.tab#tabOpen.active {
-  border-radius: 20px 20px  0 0;
+
+.tab#tabOpen.active,.tab#tabAttended.active, .tab#tabCompleted.active,.tab#tabDeleted.active{
+    border-radius: 20px 20px  0 0;
   margin-bottom: .5rem; 
+  color: var(--text);   
+}
+.tab#tabOpen.active,.tab#tabAttended.active, .tab#tabCompleted.active,.tab#tabDeleted.active {
   background: #e1eaf7;
-  color: var(--text);
 }
 
 .tab#tabAttended.active {
-  border-radius:  20px 20px 0 0 ;
   background: #fafaf0;
-  margin-bottom: .5rem; 
-  color: var(--text);
+  
 }
 
 .tab#tabCompleted.active {
   background: #e4faf1;
-  border-radius: 20px 20px 0 0 ;
-  color: var(--text);
-  margin-bottom: .5rem; 
+  
 }
 
 .tab#tabDeleted.active {
   background: #f8d7da;
-  border-radius:20px 20px 20px 0  ;
-  color: var(--text);
-  margin-bottom: .5rem; 
+   
 }
 
 .auth-form,
