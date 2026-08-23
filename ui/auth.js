@@ -20,6 +20,8 @@ function createAuthController({
     login: {
       email: document.getElementById('loginEmail'),
       senha: document.getElementById('loginPassword'),
+      // Pega a referência do botão dentro do formulário
+      submitBtn: loginForm.querySelector('button[type="submit"]'),
     },
     cadastro: {
       nome: document.getElementById('registerName'),
@@ -43,7 +45,6 @@ function createAuthController({
   function showSection(section) {
     console.log('showSection ->', section);
 
-  
     const hasSession = Boolean(obterTokenArmazenado());
     const shouldShowDashboard = section === 'dashboard' && hasSession;
 
@@ -53,7 +54,6 @@ function createAuthController({
 
     authSection.classList.toggle('hidden', shouldShowDashboard);
     dashboardSection.classList.toggle('hidden', !shouldShowDashboard);
-    //dashboardSection.style.display = shouldShowDashboard ? '' : 'none';
     logoutButton.hidden = !shouldShowDashboard;
   }
 
@@ -86,21 +86,38 @@ function createAuthController({
       return;
     }
 
+    // Guarda o texto original do botão para restaurar depois
+    const originalBtnText = fields.login.submitBtn.textContent;
+
     try {
+      // Bloqueia o botão e exibe a mensagem de carregamento
+      fields.login.submitBtn.disabled = true;
+      fields.login.submitBtn.textContent = 'Conectando...';
+      loginMessage.textContent = 'Carregando o servidor...';
+
       const data = await loginApi(payload);
       const userData = data.user || { email: payload.email };
       const token = extractTokenFromResponse(data);
+
       if (token) {
         definirTokenArmazenado(token);
       } else {
         console.warn('Token não retornado no login:', data);
       }
+
       localStorage.setItem('checklistfront_user', JSON.stringify(userData));
       console.log('Usuário logado:', userData.nome || userData.name || userData.email);
+      
+      loginMessage.textContent = ''; // Limpa a mensagem após o sucesso
       toast.show('Login realizado com sucesso.');
+
       if (token) await onEnterDashboard();
     } catch (error) {
       loginMessage.textContent = error.message;
+    } finally {
+      // O bloco finally garante que o botão será reativado mesmo se houver erro
+      fields.login.submitBtn.disabled = false;
+      fields.login.submitBtn.textContent = originalBtnText;
     }
   }
 
@@ -116,12 +133,10 @@ function createAuthController({
 
     try {
       console.groupCollapsed('[Envio de cadastro]');
-      console.log(payload);
       console.groupEnd();
 
       const data = await cadastrarApi(payload);
       console.groupCollapsed('[Resposta do cadastro]');
-      console.log(data);
       console.groupEnd();
 
       const userData = data.user || {
@@ -136,7 +151,6 @@ function createAuthController({
 
       if (token) {
         definirTokenArmazenado(token);
-        console.log('Usuário cadastrado e token armazenado:', userData.nome || userData.email);
         registerMessage.textContent = 'Novo usuário cadastrado com sucesso!';
         toast.show('Novo usuário cadastrado. Entrando no sistema...');
         setTimeout(async () => {
@@ -147,13 +161,11 @@ function createAuthController({
           }
         }, 700);
       } else {
-        console.log('Usuário cadastrado (sem token):', userData.nome || userData.email);
         registerMessage.textContent = 'Novo usuário cadastrado com sucesso!';
         toast.show('Novo usuário cadastrado. Faça login para continuar.');
         setAuthTab('login');
       }
     } catch (error) {
-      console.error('Erro no cadastro:', error);
       registerMessage.textContent = error.message || String(error);
       try {
         toast.show(error.message || 'Erro ao criar conta', 'error');
