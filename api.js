@@ -113,12 +113,12 @@ async function atualizarTarefaApi(id, payload) {
   });
 }
 
-async function excluirTarefaApi(id) {
-  return requisicaoJson(`${URL_API}/deleta_id/${id}`, {
-    method: 'DELETE',
-    headers: obterCabecalhosAutenticacao(),
-  });
-}
+//async function excluirTarefaApi(id) {
+  //return requisicaoJson(`${URL_API}/deleta_id/${id}`, {
+    //method: 'DELETE',
+    //headers: obterCabecalhosAutenticacao(),
+  //});
+//}
 
 export {
   URL_API,
@@ -133,6 +133,6 @@ export {
   cadastrarApi,
   listarTarefasApi,
   criarTarefaApi,
-  atualizarTarefaApi,
-  excluirTarefaApi,
+  atualizarTarefaApi
+  //excluirTarefaApi,
 };

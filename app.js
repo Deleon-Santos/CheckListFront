@@ -63,8 +63,7 @@ function obterUsuarioAtual() {
 function obterNomeExibicao(usuario) {
   const candidatos = [
     usuario?.nome,
-    usuario?.name,
-    usuario?.username,
+    
   ];
 
   for (const candidato of candidatos) {

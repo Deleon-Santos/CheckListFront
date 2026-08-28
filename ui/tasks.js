@@ -1,4 +1,4 @@
-import { atualizarTarefaApi, criarTarefaApi, excluirTarefaApi, listarTarefasApi } from '../api.js';
+import { atualizarTarefaApi, criarTarefaApi, listarTarefasApi } from '../api.js';
 import { createToastController } from './utils.js';
 
 function createTaskController({
@@ -15,7 +15,7 @@ function createTaskController({
   summaryCompleted,
   summaryDeleted,
   toastElement,
-  taskPriorityFilter, // <-- Adicionado o elemento select do filtro de prioridade
+  taskPriorityFilter, 
   taskAreaFilter,
   getCurrentUser,
   onAuthError,
@@ -35,12 +35,12 @@ function createTaskController({
     area: document.getElementById('taskArea'),
   };
 
-  function formatTaskDate(value) {
-    if (!value) return '';
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return '';
-    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  }
+  //function formatTaskDate(value) {
+   // if (!value) return '';
+    //const date = new Date(value);
+    //if (Number.isNaN(date.getTime())) return '';
+    //return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+ // }
 
   function formatTaskDateTime(value) {
     if (!value) return '';
@@ -132,10 +132,10 @@ function createTaskController({
       value.replace(/-/g, ' '),
     ];
 
-    const activeValues = ['ativo', 'aberta', 'aberto', 'abertas', 'pendente', 'pendentes', 'em andamento', 'aguardando', 'a fazer', 'todo', 'to do', 'backlog', 'new', 'open', 'pending', 'in progress', 'em aberto'];
-    const attendedValues = ['atendido', 'atendida', 'atendidas', 'em atendimento', 'em analise', 'em análise', 'processing', 'review', 'in review', 'awaiting'];
-    const completedValues = ['concluido', 'concluida', 'concluído', 'concluída', 'finalizado', 'finalizada', 'done', 'finished', 'complete', 'completed', 'pronto', 'pronta', 'resolved', 'closed'];
-    const deletedValues = ['excluido', 'excluída', 'excluído', 'deletado', 'deletada', 'deleted', 'trash', 'lixeira', 'removido', 'removida'];
+    const activeValues = ['ativo', 'aberta', 'aberto'];
+    const attendedValues = ['atendido', 'atendida', 'atendidas'];
+    const completedValues = ['concluido', 'concluida', 'concluído', 'concluída'];
+    const deletedValues = ['excluido', 'excluída', 'excluído', 'deletado', 'deletada'];
 
     for (const variant of variants) {
       if (activeValues.includes(variant)) return 'ativo';
@@ -164,9 +164,9 @@ function createTaskController({
       value.replace(/-/g, ' ')
     ];
 
-    const baixaValues = ['baixa', 'low', 'l'];
-    const mediaValues = ['media', 'média', 'medium', 'm'];
-    const altaValues = ['alta', 'high', 'h'];
+    const baixaValues = ['baixa'];
+    const mediaValues = ['media'];
+    const altaValues = ['alta'];
 
     for (const variant of variants) {
       if (baixaValues.includes(variant)) return 'Baixa';
@@ -201,9 +201,9 @@ function createTaskController({
       value.replace(/-/g, ' '),
     ];
 
-    const tiValues = ['ti', 'tecnologia', 'tecnologia da informacao', 'tecnologia da informação', 'tec', 'info'];
-    const comercialValues = ['comercial', 'vendas', 'sales'];
-    const operacaoValues = ['operacao', 'operação', 'operacoes', 'operacional'];
+    const tiValues = ['ti'];
+    const comercialValues = ['comercial'];
+    const operacaoValues = ['operacao'];
 
     for (const variant of variants) {
       if (tiValues.includes(variant)) return 'TI';
@@ -526,8 +526,8 @@ function createTaskController({
 
     try {
       if (isDeleted) {
-        await excluirTarefaApi(task.id);
-        toast.show('Tarefa excluída permanentemente.');
+        //await excluirTarefaApi(task.id);
+        toast.show('Você não tem permisão para excluir a ocorrência.');
       } else {
         const updatedTask = await atualizarTarefaApi(task.id, {
           titulo: task.titulo || task.title,

@@ -36,8 +36,7 @@ function createAuthController({
       data.access_token ||
       data.token ||
       data.accessToken ||
-      data.auth_token ||
-      data.jwt ||
+     
       ''
     );
   }
@@ -113,7 +112,7 @@ function createAuthController({
 
       if (token) await onEnterDashboard();
     } catch (error) {
-      loginMessage.textContent = error.message;
+      loginMessage.textContent = 'Credencial inválida';
     } finally {
       // O bloco finally garante que o botão será reativado mesmo se houver erro
       fields.login.submitBtn.disabled = false;
